@@ -108,44 +108,6 @@ public class ConfigManager {
     }
 
     private static ConfigData getDefaultConfig() {
-        ConfigData cfg = new ConfigData();
-        cfg.enabled = true;
-        cfg.comment = "Автоторговля с фермерами для продажи урожая";
-        cfg.scan_interval_ms = 1000;
-
-        TradeItemSide leftMelon = new TradeItemSide();
-        leftMelon.item = "minecraft:melon";
-        leftMelon.count = new Condition();
-        leftMelon.count.condition = "<";
-        leftMelon.count.value = 5;
-
-        TradeItemSide rightEmerald = new TradeItemSide();
-        rightEmerald.item = "minecraft:emerald";
-        rightEmerald.count = new Condition();
-        rightEmerald.count.condition = "=";
-        rightEmerald.count.value = 1;
-
-        TradeRule melonTrade = new TradeRule();
-        melonTrade.enabled = true;
-        melonTrade.comment = "Продажа арбузов фермеру";
-        melonTrade.cooldown_ms = 1000;
-        melonTrade.left = leftMelon;
-        melonTrade.right = rightEmerald;
-
-        TradeItemSide leftPumpkin = new TradeItemSide();
-        leftPumpkin.item = "minecraft:pumpkin";
-        leftPumpkin.count = new Condition();
-        leftPumpkin.count.condition = "<";
-        leftPumpkin.count.value = 5;
-
-        TradeRule pumpkinTrade = new TradeRule();
-        pumpkinTrade.enabled = true;
-        pumpkinTrade.comment = "Продажа тыкв фермеру";
-        pumpkinTrade.cooldown_ms = 1000;
-        pumpkinTrade.left = leftPumpkin;
-        pumpkinTrade.right = rightEmerald;
-
-        cfg.professions = Map.of("minecraft:farmer", List.of(melonTrade, pumpkinTrade));
-        return cfg;
+        return GSON.fromJson(ConfigManager.getDefaultConfigJson(), ConfigData.class);
     }
 }

@@ -4,14 +4,14 @@ import egorkhabarov.AutoVillagerTraderModClient;
 import egorkhabarov.cache.VillagerCache;
 import egorkhabarov.config.ConfigData;
 import egorkhabarov.config.TradeRule;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.network.packet.c2s.play.ButtonClickC2SPacket;
-import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
-import net.minecraft.network.packet.c2s.play.SelectMerchantTradeC2SPacket;
+import net.minecraft.network.packet.c2s.play.*;
+import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.screen.sync.ItemStackHash;
 import net.minecraft.util.Hand;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
@@ -28,15 +28,19 @@ public class VillagerTradeExecutor {
         VillagerCache.currentVillager = villager;
         PlayerInteractEntityC2SPacket packet = PlayerInteractEntityC2SPacket.interact(villager, false, Hand.MAIN_HAND);
         client.getNetworkHandler().sendPacket(packet);
+        VillagerCache.put(villager.getUuidAsString(), villager);
+        System.out.println("open");
     }
 
     public static void finishAutoTrade(int syncId, TradeOfferList offers) {
         VillagerEntity villager = VillagerCache.currentVillager;
         ConfigData config = AutoVillagerTraderModClient.CONFIG;
         MinecraftClient client = MinecraftClient.getInstance();
+        ClientPlayerEntity player = client.player;
         ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
         if (
-            offers == null
+            player == null
+                || offers == null
                 || villager == null
                 || !config.enabled
                 || networkHandler == null
@@ -57,12 +61,26 @@ public class VillagerTradeExecutor {
                 }
 
                 if (tradeRule.matchOffer(offer)) {
+                    int revision = player.currentScreenHandler.getRevision();
+                    short slotIndex = 2; // результат торговли
+                    byte button = 0;
                     networkHandler.sendPacket(new SelectMerchantTradeC2SPacket(tradeIndex));
+                    networkHandler.sendPacket(new ClickSlotC2SPacket(
+                        syncId,
+                        revision,
+                        slotIndex,
+                        button,
+                        SlotActionType.QUICK_MOVE, // Shift+Click
+                        new Int2ObjectOpenHashMap<>(),
+                        ItemStackHash.EMPTY
+                    ));
+                    System.out.println("trade");
                 }
             }
-            break;
         }
-        //networkHandler.sendPacket(new CloseHandledScreenC2SPacket(syncId));
+        networkHandler.sendPacket(new CloseHandledScreenC2SPacket(syncId));
+        client.execute(player::closeHandledScreen);
+        System.out.println("close");
         VillagerCache.currentVillager = null;
     }
 

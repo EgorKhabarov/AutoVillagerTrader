@@ -1,6 +1,7 @@
 package egorkhabarov.logic;
 
 import egorkhabarov.AutoVillagerTraderModClient;
+import egorkhabarov.cache.VillagerCache;
 import egorkhabarov.config.TradeRule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.passive.VillagerEntity;
@@ -24,8 +25,10 @@ public class VillagerFinder {
         );
 
         for (VillagerEntity villager : villagers) {
+            if (VillagerCache.get(villager.getUuidAsString()) != null) {
+                continue;
+            }
             String villager_profession_id = villager.getVillagerData().profession().getIdAsString();
-
             List<TradeRule> tradeRules = config.professions.get(villager_profession_id);
             if (tradeRules == null) {
                 continue;

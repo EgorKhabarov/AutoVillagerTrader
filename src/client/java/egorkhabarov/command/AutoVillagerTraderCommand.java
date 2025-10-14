@@ -30,24 +30,51 @@ public class AutoVillagerTraderCommand {
 
             dispatcher.register(ClientCommandManager.literal("avt_reset")
                 .executes(context -> {
+                    MinecraftClient client = MinecraftClient.getInstance();
+                    if (client.player == null) {
+                        return 1;
+                    }
                     VillagerCache.currentVillager = null;
                     VillagerCache.clear();
+                    client.player.sendMessage(
+                        Text.literal("Successfully reset")
+                            .formatted(Formatting.GREEN),
+                        false
+                    );
                     return 1;
                 })
             );
 
             dispatcher.register(ClientCommandManager.literal("avt_enable")
                 .executes(context -> {
+                    MinecraftClient client = MinecraftClient.getInstance();
+                    if (client.player == null) {
+                        return 1;
+                    }
                     AutoVillagerTraderModClient.CONFIG.enabled = true;
                     // TODO AutoVillagerTraderModClient.CONFIG.save();
+                    client.player.sendMessage(
+                        Text.literal("Successfully enabled")
+                            .formatted(Formatting.GREEN),
+                        false
+                    );
                     return 1;
                 })
             );
 
             dispatcher.register(ClientCommandManager.literal("avt_disable")
                 .executes(context -> {
+                    MinecraftClient client = MinecraftClient.getInstance();
+                    if (client.player == null) {
+                        return 1;
+                    }
                     AutoVillagerTraderModClient.CONFIG.enabled = false;
                     // TODO AutoVillagerTraderModClient.CONFIG.save();
+                    client.player.sendMessage(
+                        Text.literal("Successfully disabled")
+                            .formatted(Formatting.GREEN),
+                        false
+                    );
                     return 1;
                 })
             );

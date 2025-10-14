@@ -17,6 +17,5 @@ public class TradeRule {
             && (this.left2 != null ? this.left2.item : default_item).equals(offer.getDisplayedSecondBuyItem().getItem().toString())
             && (this.right != null ? this.right.item : default_item).equals(offer.getSellItem().getItem().toString())
             && (ConditionChecker.match(this.left.count, offer.getDisplayedFirstBuyItem().getCount()));
-
     }
 }

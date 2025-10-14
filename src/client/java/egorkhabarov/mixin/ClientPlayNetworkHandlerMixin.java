@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ClientPlayNetworkHandlerMixin {
     @Inject(method = "onSetTradeOffers", at = @At("HEAD"))
     private void onSetTradeOffers(SetTradeOffersS2CPacket packet, CallbackInfo ci) {
-        if (VillagerCache.currentVillager == null || !AutoVillagerTraderModClient.CONFIG.enabled) {
+        if (VillagerCache.currentVillager != null || !AutoVillagerTraderModClient.CONFIG.enabled) {
             return;
         }
         int syncId = packet.getSyncId();
