@@ -1,6 +1,7 @@
 package egorkhabarov.command;
 
 import egorkhabarov.AutoVillagerTraderModClient;
+import egorkhabarov.cache.VillagerCache;
 import egorkhabarov.config.ConfigManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -18,9 +19,35 @@ public class AutoVillagerTraderCommand {
                         return 1;
                     }
                     AutoVillagerTraderModClient.CONFIG = ConfigManager.reload();
-                    int v = 1;
-                    client.player.sendMessage(Text.literal("Reloaded "+v).formatted(Formatting.GREEN), false);
-                    client.player.sendMessage(Text.literal("Reloaded "+v).formatted(Formatting.GREEN), true);
+                    client.player.sendMessage(
+                        Text.literal("AVT config successfully reloaded")
+                            .formatted(Formatting.GREEN),
+                        false
+                    );
+                    return 1;
+                })
+            );
+
+            dispatcher.register(ClientCommandManager.literal("avt_reset")
+                .executes(context -> {
+                    VillagerCache.currentVillager = null;
+                    VillagerCache.clear();
+                    return 1;
+                })
+            );
+
+            dispatcher.register(ClientCommandManager.literal("avt_enable")
+                .executes(context -> {
+                    AutoVillagerTraderModClient.CONFIG.enabled = true;
+                    // TODO AutoVillagerTraderModClient.CONFIG.save();
+                    return 1;
+                })
+            );
+
+            dispatcher.register(ClientCommandManager.literal("avt_disable")
+                .executes(context -> {
+                    AutoVillagerTraderModClient.CONFIG.enabled = false;
+                    // TODO AutoVillagerTraderModClient.CONFIG.save();
                     return 1;
                 })
             );

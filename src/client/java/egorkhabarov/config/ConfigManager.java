@@ -10,8 +10,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
 
 public class ConfigManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -65,13 +63,11 @@ public class ConfigManager {
 {
     "enabled": true,
     "cooldown_ms": 5000,
-    "comment": "Автоторговля с фермерами для продажи урожая",
     "professions": {
         "minecraft:farmer": [
             {
                 "enabled": true,
-                "comment": "Продажа арбузов фермеру",
-                "cooldown_ms": 1000,
+                "cooldown_ms": 500,
                 "left": {
                     "item": "minecraft:melon",
                     "count": {
@@ -89,8 +85,7 @@ public class ConfigManager {
             },
             {
                 "enabled": true,
-                "comment": "Продажа тыкв фермеру",
-                "cooldown_ms": 1000,
+                "cooldown_ms": 500,
                 "left": {
                     "item": "minecraft:pumpkin",
                     "count": {
