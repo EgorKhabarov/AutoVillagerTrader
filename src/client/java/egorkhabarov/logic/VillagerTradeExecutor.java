@@ -25,18 +25,19 @@ public class VillagerTradeExecutor {
         if (player == null || client.getNetworkHandler() == null) {
             return;
         }
-        VillagerCache.currentVillager = villager;
         PlayerInteractEntityC2SPacket packet = PlayerInteractEntityC2SPacket.interact(villager, false, Hand.MAIN_HAND);
         client.getNetworkHandler().sendPacket(packet);
+        VillagerCache.currentVillager = villager;
         VillagerCache.put(villager.getUuidAsString(), villager);
-        System.out.println("open");
+        System.out.println("open " + villager.getUuidAsString());
     }
 
     public static void finishAutoTrade(int syncId, TradeOfferList offers) {
-        VillagerEntity villager = VillagerCache.currentVillager;
-        ConfigData config = AutoVillagerTraderModClient.CONFIG;
+        System.out.println("in "+VillagerCache.currentVillager);
         MinecraftClient client = MinecraftClient.getInstance();
         ClientPlayerEntity player = client.player;
+        VillagerEntity villager = VillagerCache.currentVillager;
+        ConfigData config = AutoVillagerTraderModClient.CONFIG;
         ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
         if (
             player == null
@@ -61,20 +62,9 @@ public class VillagerTradeExecutor {
                 }
 
                 if (tradeRule.matchOffer(offer)) {
-                    int revision = player.currentScreenHandler.getRevision();
-                    short slotIndex = 2; // результат торговли
-                    byte button = 0;
-                    networkHandler.sendPacket(new SelectMerchantTradeC2SPacket(tradeIndex));
-                    networkHandler.sendPacket(new ClickSlotC2SPacket(
-                        syncId,
-                        revision,
-                        slotIndex,
-                        button,
-                        SlotActionType.QUICK_MOVE, // Shift+Click
-                        new Int2ObjectOpenHashMap<>(),
-                        ItemStackHash.EMPTY
-                    ));
-                    System.out.println("trade");
+                    System.out.println("call VillagerTradeExecutor.executeTrade("+syncId+", "+tradeIndex+")");
+                    VillagerTradeExecutor.executeTrade(syncId, tradeIndex);
+                    System.out.println("after call VillagerTradeExecutor.executeTrade("+syncId+", "+tradeIndex+")");
                 }
             }
         }
@@ -84,8 +74,28 @@ public class VillagerTradeExecutor {
         VillagerCache.currentVillager = null;
     }
 
-    public static void executeTrade(ClientPlayNetworkHandler networkHandler, int syncId, int tradeIndex) {
+    public static void executeTrade(int syncId, int tradeIndex) {
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientPlayerEntity player = client.player;
+        ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
+        if (player == null || networkHandler == null) {
+            System.out.println("player == null || networkHandler == null  "+player+" "+networkHandler);
+            return;
+        }
+
+        int revision = player.currentScreenHandler.getRevision();
+        short slotIndex = 2; // результат торговли
+        byte button = 0;
         networkHandler.sendPacket(new SelectMerchantTradeC2SPacket(tradeIndex));
-        networkHandler.sendPacket(new ButtonClickC2SPacket(syncId, 0));
+        networkHandler.sendPacket(new ClickSlotC2SPacket(
+            syncId,
+            revision,
+            slotIndex,
+            button,
+            SlotActionType.QUICK_MOVE, // Shift+Click
+            new Int2ObjectOpenHashMap<>(),
+            ItemStackHash.EMPTY
+        ));
+        System.out.println("trade");
     }
 }

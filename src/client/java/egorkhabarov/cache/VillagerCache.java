@@ -24,7 +24,6 @@ public class VillagerCache {
         if (entry == null) {
             return null;
         }
-
         if (System.currentTimeMillis() - entry.timestamp > TTL_MILLIS) {
             cache.remove(key);
             return null;
