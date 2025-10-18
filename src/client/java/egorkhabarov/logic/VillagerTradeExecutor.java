@@ -19,59 +19,79 @@ import net.minecraft.village.TradeOfferList;
 import java.util.List;
 
 public class VillagerTradeExecutor {
-    public static void openTrade(VillagerEntity villager) {
+    public static boolean openTrade(VillagerEntity villager) {
         MinecraftClient client = MinecraftClient.getInstance();
         ClientPlayerEntity player = client.player;
         if (player == null || client.getNetworkHandler() == null) {
-            return;
+            return false;
         }
-        PlayerInteractEntityC2SPacket packet = PlayerInteractEntityC2SPacket.interact(villager, false, Hand.MAIN_HAND);
-        client.getNetworkHandler().sendPacket(packet);
+        try {
+            PlayerInteractEntityC2SPacket packet = PlayerInteractEntityC2SPacket.interact(villager, false, Hand.MAIN_HAND);
+            client.getNetworkHandler().sendPacket(packet);
+        } catch (Exception e) {
+            return false;
+        }
         VillagerCache.currentVillager = villager;
         VillagerCache.put(villager.getUuidAsString(), villager);
-        System.out.println("open " + villager.getUuidAsString());
+        System.out.println("    open " + villager.getUuidAsString() + " " + villager);
+        return true;
     }
 
-    public static void finishAutoTrade(int syncId, TradeOfferList offers) {
-        System.out.println("in "+VillagerCache.currentVillager);
+    public static void finishAutoTrade(TradeOfferList offers) {
+        // System.out.println("in "+VillagerCache.currentVillager);
         MinecraftClient client = MinecraftClient.getInstance();
         ClientPlayerEntity player = client.player;
-        VillagerEntity villager = VillagerCache.currentVillager;
+        // VillagerEntity villager = VillagerCache.currentVillager;
         ConfigData config = AutoVillagerTraderModClient.CONFIG;
         ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
         if (
             player == null
                 || offers == null
-                || villager == null
+                // || villager == null
                 || !config.enabled
                 || networkHandler == null
         ) {
+            System.out.println("player "+player);
+            System.out.println("offers "+offers);
+            // System.out.println("villager "+villager);
+            System.out.println("config.enabled "+config.enabled);
+            System.out.println("networkHandler "+networkHandler);
             return;
         }
+        // System.out.println("      found " + offers.size() + " offers for villager UUID="+villager.getUuidAsString() + " " + villager);
+        System.out.println("      found " + offers.size());
         for (int tradeIndex = 0; tradeIndex < offers.size(); tradeIndex++) {
             TradeOffer offer = offers.get(tradeIndex);
             if (offer.isDisabled()) {
                 continue;
             }
-            String villager_profession_id = villager.getVillagerData().profession().getIdAsString();
-            List<TradeRule> tradeRules = config.professions.get(villager_profession_id);
+            // String villager_profession_id = villager.getVillagerData().profession().getIdAsString();
+            // List<TradeRule> tradeRules = config.professions.get(villager_profession_id);
 
-            for (TradeRule tradeRule : tradeRules) {
-                if (!tradeRule.enabled) {
-                    continue;
-                }
+            for (List<TradeRule> tradeRules : config.professions.values()) {
+                for (TradeRule tradeRule : tradeRules) {
+                    if (!tradeRule.enabled) {
+                        continue;
+                    }
 
-                if (tradeRule.matchOffer(offer)) {
-                    System.out.println("call VillagerTradeExecutor.executeTrade("+syncId+", "+tradeIndex+")");
-                    VillagerTradeExecutor.executeTrade(syncId, tradeIndex);
-                    System.out.println("after call VillagerTradeExecutor.executeTrade("+syncId+", "+tradeIndex+")");
+                    if (tradeRule.matchOffer(offer)) {
+                        System.out.println("        execute trade (" + player.currentScreenHandler.syncId + ", " + tradeIndex + ")");
+                        // VillagerCache.skipOffer = true;
+                        VillagerTradeExecutor.executeTrade(player.currentScreenHandler.syncId, tradeIndex);
+                        System.out.println("        {"+offer.getDisplayedFirstBuyItem()+", "+offer.getDisplayedSecondBuyItem()+"} == "+offer.getSellItem());
+                    }
                 }
             }
         }
-        networkHandler.sendPacket(new CloseHandledScreenC2SPacket(syncId));
-        client.execute(player::closeHandledScreen);
-        System.out.println("close");
-        VillagerCache.currentVillager = null;
+        // System.out.println("    currentScreenHandler: "+player.currentScreenHandler);
+        // player.closeHandledScreen();
+        // System.out.println("    close");
+        // client.execute(() -> {
+        //     player.closeHandledScreen();
+        //     System.out.println("close");
+        // });
+        // player.closeHandledScreen();
+        // VillagerCache.currentVillager = null;
     }
 
     public static void executeTrade(int syncId, int tradeIndex) {
@@ -96,6 +116,6 @@ public class VillagerTradeExecutor {
             new Int2ObjectOpenHashMap<>(),
             ItemStackHash.EMPTY
         ));
-        System.out.println("trade");
+        System.out.println("          trade");
     }
 }

@@ -2,6 +2,7 @@ package egorkhabarov.command;
 
 import egorkhabarov.AutoVillagerTraderModClient;
 import egorkhabarov.cache.VillagerCache;
+import egorkhabarov.cache.VillagerTradeQueue;
 import egorkhabarov.config.ConfigManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -36,6 +37,9 @@ public class AutoVillagerTraderCommand {
                     }
                     VillagerCache.currentVillager = null;
                     VillagerCache.clear();
+                    VillagerTradeQueue.PENDING.clear();
+                    VillagerTradeQueue.busy = false;
+                    // VillagerCache.skipOffer = false;
                     client.player.sendMessage(
                         Text.literal("Successfully reset")
                             .formatted(Formatting.GREEN),

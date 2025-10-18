@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class VillagerCache {
     public static VillagerEntity currentVillager;
+    // public static boolean autoTrading = false;
+    // public static boolean skipOffer = false;
 
     private static final ConcurrentHashMap<String, CacheEntry> cache = new ConcurrentHashMap<>();
     private static final long TTL_MILLIS = 5000; // 5 секунд

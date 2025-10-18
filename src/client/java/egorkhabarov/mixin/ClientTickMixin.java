@@ -31,6 +31,7 @@ public class ClientTickMixin {
         long interval = AutoVillagerTraderModClient.CONFIG.scan_interval_ms;
 
         if (now - lastScanTime >= interval) {
+            System.out.println("DEBUG TICK: currentScreenHandler: "+client.player.currentScreenHandler);
             this.lastScanTime = now;
             VillagerFinder.tick();
         }
