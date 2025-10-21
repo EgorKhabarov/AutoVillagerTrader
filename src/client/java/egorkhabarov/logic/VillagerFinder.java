@@ -18,36 +18,40 @@ public class VillagerFinder {
         if (client.world == null || client.player == null || !config.enabled) {
             return;
         }
-        if (!VillagerTradeQueue.PENDING.isEmpty()) {
-            System.out.println("VillagerTradeQueue.PENDING = "+VillagerTradeQueue.PENDING);
-            return;
-        }
+        // if (!VillagerTradeQueue.PENDING.isEmpty()) {
+        //     System.out.println("VillagerTradeQueue.PENDING = "+VillagerTradeQueue.PENDING);
+        //     return;
+        // }
         List<VillagerEntity> villagers = client.world.getEntitiesByClass(
             VillagerEntity.class,
-            client.player.getBoundingBox().expand(0.5),
-            v -> client.player.canSee(v)
-                && config.professions.containsKey(v.getVillagerData().profession().getIdAsString())
+            client.player.getBoundingBox().expand(config.scan_radius),
+            v -> {
+                if (config.need_see == client.player.canSee(v)) {
+                    return false;
+                }
+                return config.professions.containsKey(v.getVillagerData().profession().getIdAsString());
+            }
         );
 
-        if (!villagers.isEmpty()) {
-            System.out.println("for (VillagerEntity villager : villagers{" + villagers.size() + "})");
-        }
+        // if (!villagers.isEmpty()) {
+        //     System.out.println("for (VillagerEntity villager : villagers{" + villagers.size() + "})");
+        // }
         for (VillagerEntity villager : villagers) {
-            // if (VillagerCache.get(villager.getUuidAsString()) != null) {
-            //     continue;
-            // }
+            if (VillagerCache.get(villager) != null) {
+                continue;
+            }
             String villager_profession_id = villager.getVillagerData().profession().getIdAsString();
             List<TradeRule> tradeRules = config.professions.get(villager_profession_id);
             if (tradeRules == null) {
                 continue;
             }
             System.out.println("  villager: UUID="+villager.getUuidAsString() + " " + villager);
-            VillagerTradeQueue.add(villager);
-            //VillagerTradeExecutor.openTrade(villager);
-            // break;
+            // VillagerTradeQueue.add(villager);
+            VillagerTradeExecutor.openTrade(villager);
+            break;
         }
-        if (!villagers.isEmpty()) {
-            System.out.println("} size("+VillagerTradeQueue.PENDING.size()+") {"+VillagerTradeQueue.PENDING+"}");
-        }
+        // if (!villagers.isEmpty()) {
+        //     System.out.println("} size("+VillagerTradeQueue.PENDING.size()+") {"+VillagerTradeQueue.PENDING+"}");
+        // }
     }
 }

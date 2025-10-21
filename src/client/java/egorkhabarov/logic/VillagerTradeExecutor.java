@@ -31,8 +31,9 @@ public class VillagerTradeExecutor {
         } catch (Exception e) {
             return false;
         }
-        VillagerCache.currentVillager = villager;
-        VillagerCache.put(villager.getUuidAsString(), villager);
+        // VillagerCache.currentVillager = villager;
+        // VillagerCache.put(villager.getUuidAsString(), villager);
+        VillagerCache.put(villager);
         System.out.println("    open " + villager.getUuidAsString() + " " + villager);
         return true;
     }

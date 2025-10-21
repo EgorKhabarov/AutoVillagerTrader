@@ -67,7 +67,10 @@ public class ConfigManager {
         return """
 {
     "enabled": true,
-    "cooldown_ms": 5000,
+    "scan_interval_ms": 900,
+    "scan_radius": 0.5,
+    "villager_cache_ttl": 5000,
+    "need_see": true,
     "professions": {
         "minecraft:farmer": [
             {

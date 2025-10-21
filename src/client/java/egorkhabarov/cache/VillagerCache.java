@@ -33,6 +33,14 @@ public class VillagerCache {
         return entry.villager;
     }
 
+    public static void put(VillagerEntity villager) {
+        VillagerCache.put(villager.getUuidAsString(), villager);
+    }
+
+    public static VillagerEntity get(VillagerEntity villager) {
+        return VillagerCache.get(villager.getUuidAsString());
+    }
+
     public static void cleanup() {
         long now = System.currentTimeMillis();
         for (Map.Entry<String, CacheEntry> e : cache.entrySet()) {
