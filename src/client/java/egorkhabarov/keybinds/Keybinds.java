@@ -2,6 +2,7 @@ package egorkhabarov.keybinds;
 
 import egorkhabarov.AutoVillagerTraderModClient;
 import egorkhabarov.config.ConfigManager;
+import egorkhabarov.util.ChatUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
@@ -26,6 +27,7 @@ public class Keybinds {
                 }
                 AutoVillagerTraderModClient.CONFIG.enabled = !AutoVillagerTraderModClient.CONFIG.enabled;
                 ConfigManager.saveConfig();
+                ChatUtils.sendStatusMessage();
             }
         });
     }

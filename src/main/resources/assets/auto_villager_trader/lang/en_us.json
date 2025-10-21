@@ -1,4 +1,8 @@
 {
     "category.autotrader": "Auto Villager Trader",
-    "key.autotrader.toggle": "Toggle"
+    "key.autotrader.toggle": "Toggle",
+    "message.autotrader.enabled": "Enabled",
+    "message.autotrader.disabled": "Disabled",
+    "message.autotrader.reload": "Config successfully reloaded",
+    "message.autotrader.reset": "Reset"
 }

@@ -4,11 +4,10 @@ import egorkhabarov.AutoVillagerTraderModClient;
 import egorkhabarov.cache.VillagerCache;
 import egorkhabarov.cache.VillagerTradeQueue;
 import egorkhabarov.config.ConfigManager;
+import egorkhabarov.util.ChatUtils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 public class AutoVillagerTraderCommand {
     public static void register() {
@@ -20,11 +19,7 @@ public class AutoVillagerTraderCommand {
                         return 1;
                     }
                     AutoVillagerTraderModClient.CONFIG = ConfigManager.reload();
-                    client.player.sendMessage(
-                        Text.literal("AVT config successfully reloaded")
-                            .formatted(Formatting.GREEN),
-                        false
-                    );
+                    ChatUtils.sendReloadMessage();
                     return 1;
                 })
             );
@@ -40,11 +35,7 @@ public class AutoVillagerTraderCommand {
                     VillagerTradeQueue.PENDING.clear();
                     VillagerTradeQueue.busy = false;
                     // VillagerCache.skipOffer = false;
-                    client.player.sendMessage(
-                        Text.literal("Successfully reset")
-                            .formatted(Formatting.GREEN),
-                        false
-                    );
+                    ChatUtils.sendResetMessage();
                     return 1;
                 })
             );
@@ -57,11 +48,7 @@ public class AutoVillagerTraderCommand {
                     }
                     AutoVillagerTraderModClient.CONFIG.enabled = true;
                     ConfigManager.saveConfig();
-                    client.player.sendMessage(
-                        Text.literal("Successfully enabled")
-                            .formatted(Formatting.GREEN),
-                        false
-                    );
+                    ChatUtils.sendStatusMessage();
                     return 1;
                 })
             );
@@ -74,11 +61,7 @@ public class AutoVillagerTraderCommand {
                     }
                     AutoVillagerTraderModClient.CONFIG.enabled = false;
                     ConfigManager.saveConfig();
-                    client.player.sendMessage(
-                        Text.literal("Successfully disabled")
-                            .formatted(Formatting.GREEN),
-                        false
-                    );
+                    ChatUtils.sendStatusMessage();
                     return 1;
                 })
             );
