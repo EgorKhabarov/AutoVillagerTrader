@@ -1,26 +1,31 @@
 package egorkhabarov.keybinds;
 
+import egorkhabarov.AutoVillagerTraderModClient;
+import egorkhabarov.config.ConfigManager;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
 public class Keybinds {
-    public static KeyBinding debugKey;
+    private static KeyBinding toggleKey;
 
     public static void register() {
-        debugKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.autotrader.debug",
-            GLFW.GLFW_KEY_RIGHT_SHIFT,
+        Keybinds.toggleKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.autotrader.toggle",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_UNKNOWN,
             "category.autotrader"
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            while (debugKey.wasPressed()) {
+            while (Keybinds.toggleKey.wasPressed()) {
                 if (client.player == null) {
                     continue;
                 }
-                System.out.println("DEBUG KEY: currentScreenHandler: "+client.player.currentScreenHandler);
+                AutoVillagerTraderModClient.CONFIG.enabled = !AutoVillagerTraderModClient.CONFIG.enabled;
+                ConfigManager.saveConfig();
             }
         });
     }

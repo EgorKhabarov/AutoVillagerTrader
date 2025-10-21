@@ -56,7 +56,7 @@ public class AutoVillagerTraderCommand {
                         return 1;
                     }
                     AutoVillagerTraderModClient.CONFIG.enabled = true;
-                    // TODO AutoVillagerTraderModClient.CONFIG.save();
+                    ConfigManager.saveConfig();
                     client.player.sendMessage(
                         Text.literal("Successfully enabled")
                             .formatted(Formatting.GREEN),
@@ -73,7 +73,7 @@ public class AutoVillagerTraderCommand {
                         return 1;
                     }
                     AutoVillagerTraderModClient.CONFIG.enabled = false;
-                    // TODO AutoVillagerTraderModClient.CONFIG.save();
+                    ConfigManager.saveConfig();
                     client.player.sendMessage(
                         Text.literal("Successfully disabled")
                             .formatted(Formatting.GREEN),

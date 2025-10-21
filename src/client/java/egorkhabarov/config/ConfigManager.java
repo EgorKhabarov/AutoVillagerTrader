@@ -12,7 +12,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class ConfigManager {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder()
+        .setPrettyPrinting()
+        .disableHtmlEscaping()
+        .create();
     private static final String CONFIG_PATH = "config/" + AutoVillagerTraderModClient.MOD_ID + ".json";
 
     private static ConfigData configInstance;
@@ -30,12 +33,14 @@ public class ConfigManager {
     }
 
     private static ConfigData loadOrCreateConfig() {
-        File file = new File(CONFIG_PATH);
+        File file = new File(ConfigManager.CONFIG_PATH);
 
         if (!file.exists()) {
             System.out.println("[VillagerTradeMod] Config not found, creating default...");
             try {
-                file.getParentFile().mkdirs();
+                if (!file.getParentFile().mkdirs()) {
+                    System.err.println("[VillagerTradeMod] Failed to create config directory");
+                }
                 try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
                     writer.write(ConfigManager.getDefaultConfigJson());
                 }
@@ -109,5 +114,14 @@ public class ConfigManager {
 
     private static ConfigData getDefaultConfig() {
         return GSON.fromJson(ConfigManager.getDefaultConfigJson(), ConfigData.class);
+    }
+
+    public static void saveConfig() {
+        File file = new File(ConfigManager.CONFIG_PATH);
+        try (FileWriter writer = new FileWriter(file, StandardCharsets.UTF_8)) {
+            GSON.toJson(ConfigManager.configInstance, writer);
+        } catch (IOException | JsonSyntaxException e) {
+            System.err.println("[VillagerTradeMod] Failed to save config: " + e.getMessage());
+        }
     }
 }

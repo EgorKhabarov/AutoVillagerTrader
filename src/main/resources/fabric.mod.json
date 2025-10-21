@@ -21,7 +21,6 @@
 		]
 	},
 	"mixins": [
-		"modid.mixins.json",
 		{
 			"config": "auto_villager_trader.client.mixins.json",
 			"environment": "client"
