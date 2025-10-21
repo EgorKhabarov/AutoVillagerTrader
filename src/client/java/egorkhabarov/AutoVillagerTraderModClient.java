@@ -17,6 +17,7 @@ public class AutoVillagerTraderModClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		AutoVillagerTraderModClient.CONFIG = ConfigManager.getConfig();
         AutoVillagerTraderCommand.register();
+        // ClientTickHandler.register();
         Keybinds.register();
 	}
 }
