@@ -5,6 +5,7 @@ import egorkhabarov.config.ConfigManager;
 import egorkhabarov.util.ChatUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
@@ -20,7 +21,7 @@ public class Keybinds {
             "category.autotrader"
         ));
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+        ClientTickEvents.END_CLIENT_TICK.register((MinecraftClient client) -> {
             while (Keybinds.toggleKey.wasPressed()) {
                 if (client.player == null) {
                     continue;
