@@ -37,11 +37,20 @@ public class ChatUtils {
         ChatUtils.sendModMessage(Text.literal(message).formatted(Formatting.GREEN));
     }
 
-    public static void sendStatusMessage() {
+    public static void sendAutoTraderStatusMessage() {
         MutableText message = Text.translatable(
             AutoVillagerTraderModClient.CONFIG.enabled
-            ? "message.autotrader.enabled"
-            : "message.autotrader.disabled"
+            ? "message.autotrader.auto_trader_enabled"
+            : "message.autotrader.auto_trader_disabled"
+        );
+        ChatUtils.sendModMessage(message.formatted(Formatting.GREEN));
+    }
+
+    public static void sendAutoFinderStatusMessage() {
+        MutableText message = Text.translatable(
+            AutoVillagerTraderModClient.CONFIG.auto_finder_enabled
+            ? "message.autotrader.auto_finder_enabled"
+            : "message.autotrader.auto_finder_disabled"
         );
         ChatUtils.sendModMessage(message.formatted(Formatting.GREEN));
     }

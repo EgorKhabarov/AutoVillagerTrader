@@ -1,7 +1,8 @@
-package egorkhabarov;
+package egorkhabarov.logic;
 
+import egorkhabarov.AutoVillagerTraderModClient;
 import egorkhabarov.cache.VillagerCache;
-import egorkhabarov.logic.VillagerFinder;
+import egorkhabarov.config.ConfigData;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
 
@@ -10,18 +11,20 @@ public class ClientTickHandler {
 
     public static void register() {
         ClientTickEvents.END_CLIENT_TICK.register((MinecraftClient client) -> {
+            ConfigData config = AutoVillagerTraderModClient.CONFIG;
             if (
                 client.player == null
                     || client.world == null
-                    || AutoVillagerTraderModClient.CONFIG == null
+                    || config == null
+                    || !config.enabled
+                    || !config.auto_finder_enabled
                     || VillagerCache.currentVillager != null
-                    || !AutoVillagerTraderModClient.CONFIG.enabled
             ) {
                 return;
             }
 
             long now = System.currentTimeMillis();
-            long interval = AutoVillagerTraderModClient.CONFIG.scan_interval_ms;
+            long interval = config.scan_interval_ms;
 
             if (now - lastScanTime >= interval) {
                 lastScanTime = now;

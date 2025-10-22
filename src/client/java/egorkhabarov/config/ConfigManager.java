@@ -66,7 +66,8 @@ public class ConfigManager {
     private static String getDefaultConfigJson() {
         return """
 {
-    "enabled": true,
+    "enabled": false,
+    "auto_finder_enabled": false,
     "scan_interval_ms": 900,
     "scan_radius": 0.5,
     "villager_cache_ttl": 5000,

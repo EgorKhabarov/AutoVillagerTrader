@@ -15,7 +15,7 @@ public class VillagerFinder {
 
     public static void tick() {
         ConfigData config = AutoVillagerTraderModClient.CONFIG;
-        if (client.world == null || client.player == null || !config.enabled) {
+        if (client.world == null || client.player == null || !config.enabled || !config.auto_finder_enabled) {
             return;
         }
         // if (!VillagerTradeQueue.PENDING.isEmpty()) {
@@ -26,7 +26,7 @@ public class VillagerFinder {
             VillagerEntity.class,
             client.player.getBoundingBox().expand(config.scan_radius),
             v -> {
-                if (config.need_see == client.player.canSee(v)) {
+                if (config.need_see && !client.player.canSee(v)) {
                     return false;
                 }
                 return config.professions.containsKey(v.getVillagerData().profession().getIdAsString());

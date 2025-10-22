@@ -11,25 +11,46 @@ import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
 public class Keybinds {
-    private static KeyBinding toggleKey;
+    private static KeyBinding toggleAutoTraderKey;
+    private static KeyBinding toggleAutoFinderKey;
+
+    private static boolean wasToggleAutoTraderKeyPressed = false;
+    private static boolean wasToggleAutoFinderKeyPressed = false;
 
     public static void register() {
-        Keybinds.toggleKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-            "key.autotrader.toggle",
+        Keybinds.toggleAutoTraderKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.autotrader.toggle_auto_trader",
+            InputUtil.Type.KEYSYM,
+            GLFW.GLFW_KEY_UNKNOWN,
+            "category.autotrader"
+        ));
+        Keybinds.toggleAutoFinderKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            "key.autotrader.toggle_auto_finder",
             InputUtil.Type.KEYSYM,
             GLFW.GLFW_KEY_UNKNOWN,
             "category.autotrader"
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register((MinecraftClient client) -> {
-            while (Keybinds.toggleKey.wasPressed()) {
-                if (client.player == null) {
-                    continue;
-                }
+            if (client.player == null) {
+                return;
+            }
+
+            boolean toggleAutoTraderKeyNow = Keybinds.toggleAutoTraderKey.isPressed();
+            if (!toggleAutoTraderKeyNow && Keybinds.wasToggleAutoTraderKeyPressed) {
                 AutoVillagerTraderModClient.CONFIG.enabled = !AutoVillagerTraderModClient.CONFIG.enabled;
                 ConfigManager.saveConfig();
-                ChatUtils.sendStatusMessage();
+                ChatUtils.sendAutoTraderStatusMessage();
             }
+            Keybinds.wasToggleAutoTraderKeyPressed = toggleAutoTraderKeyNow;
+
+            boolean toggleAutoFinderKeyNow = Keybinds.toggleAutoFinderKey.isPressed();
+            if (!toggleAutoFinderKeyNow && Keybinds.wasToggleAutoFinderKeyPressed) {
+                AutoVillagerTraderModClient.CONFIG.auto_finder_enabled = !AutoVillagerTraderModClient.CONFIG.auto_finder_enabled;
+                ConfigManager.saveConfig();
+                ChatUtils.sendAutoFinderStatusMessage();
+            }
+            Keybinds.wasToggleAutoFinderKeyPressed = toggleAutoFinderKeyNow;
         });
     }
 }

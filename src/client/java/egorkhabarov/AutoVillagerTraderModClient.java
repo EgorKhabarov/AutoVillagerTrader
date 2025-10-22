@@ -4,6 +4,7 @@ import egorkhabarov.command.AutoVillagerTraderCommand;
 import egorkhabarov.config.ConfigData;
 import egorkhabarov.config.ConfigManager;
 import egorkhabarov.keybinds.Keybinds;
+import egorkhabarov.logic.ClientTickHandler;
 import net.fabricmc.api.ClientModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

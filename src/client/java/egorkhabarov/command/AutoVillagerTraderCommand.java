@@ -48,7 +48,7 @@ public class AutoVillagerTraderCommand {
                     }
                     AutoVillagerTraderModClient.CONFIG.enabled = true;
                     ConfigManager.saveConfig();
-                    ChatUtils.sendStatusMessage();
+                    ChatUtils.sendAutoTraderStatusMessage();
                     return 1;
                 })
             );
@@ -61,7 +61,33 @@ public class AutoVillagerTraderCommand {
                     }
                     AutoVillagerTraderModClient.CONFIG.enabled = false;
                     ConfigManager.saveConfig();
-                    ChatUtils.sendStatusMessage();
+                    ChatUtils.sendAutoTraderStatusMessage();
+                    return 1;
+                })
+            );
+
+            dispatcher.register(ClientCommandManager.literal("avt_auto_finder_enable")
+                .executes(context -> {
+                    MinecraftClient client = MinecraftClient.getInstance();
+                    if (client.player == null) {
+                        return 1;
+                    }
+                    AutoVillagerTraderModClient.CONFIG.auto_finder_enabled = true;
+                    ConfigManager.saveConfig();
+                    ChatUtils.sendAutoFinderStatusMessage();
+                    return 1;
+                })
+            );
+
+            dispatcher.register(ClientCommandManager.literal("avt_auto_finder_disable")
+                .executes(context -> {
+                    MinecraftClient client = MinecraftClient.getInstance();
+                    if (client.player == null) {
+                        return 1;
+                    }
+                    AutoVillagerTraderModClient.CONFIG.auto_finder_enabled = false;
+                    ConfigManager.saveConfig();
+                    ChatUtils.sendAutoFinderStatusMessage();
                     return 1;
                 })
             );

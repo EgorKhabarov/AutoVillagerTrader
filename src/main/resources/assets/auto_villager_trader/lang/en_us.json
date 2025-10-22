@@ -1,8 +1,11 @@
 {
     "category.autotrader": "Auto Villager Trader",
-    "key.autotrader.toggle": "Toggle",
-    "message.autotrader.enabled": "Enabled",
-    "message.autotrader.disabled": "Disabled",
+    "key.autotrader.toggle_auto_trader": "Toggle AutoTrader",
+    "key.autotrader.toggle_auto_finder": "Toggle AutoFinder",
     "message.autotrader.reload": "Config successfully reloaded",
-    "message.autotrader.reset": "Reset"
+    "message.autotrader.reset": "Reset",
+    "message.autotrader.auto_trader_enabled": "AutoTrader enabled",
+    "message.autotrader.auto_trader_disabled": "AutoTrader disabled",
+    "message.autotrader.auto_finder_enabled": "AutoFinder enabled",
+    "message.autotrader.auto_finder_disabled": "AutoFinder disabled"
 }
