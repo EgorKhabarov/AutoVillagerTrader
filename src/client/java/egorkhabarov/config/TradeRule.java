@@ -4,9 +4,12 @@ import egorkhabarov.logic.ConditionChecker;
 import net.minecraft.village.TradeOffer;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class TradeRule {
     public boolean enabled = true;
     public long cooldown_ms = 0;
+    public List<String> professions;
     public TradeItemSide left;
     public @Nullable TradeItemSide left2;  // Optional
     public TradeItemSide right;

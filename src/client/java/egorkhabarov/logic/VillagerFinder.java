@@ -2,7 +2,6 @@ package egorkhabarov.logic;
 
 import egorkhabarov.AutoVillagerTraderModClient;
 import egorkhabarov.cache.VillagerCache;
-import egorkhabarov.config.TradeRule;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -11,6 +10,7 @@ import egorkhabarov.config.ConfigData;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.util.Hand;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class VillagerFinder {
@@ -26,9 +26,11 @@ public class VillagerFinder {
                 || networkHandler == null
                 || !config.enabled
                 || !config.auto_finder_enabled
+                || config.trades == null
         ) {
             return;
         }
+        HashSet<String> professions = config.getProfessions();
         List<VillagerEntity> villagers = client.world.getEntitiesByClass(
             VillagerEntity.class,
             player.getBoundingBox().expand(config.scan_radius),
@@ -36,16 +38,12 @@ public class VillagerFinder {
                 if (config.need_see && !player.canSee(v)) {
                     return false;
                 }
-                return config.professions.contains(v.getVillagerData().profession().getIdAsString());
+                return professions.contains(v.getVillagerData().profession().getIdAsString());
             }
         );
 
         for (VillagerEntity villager : villagers) {
             if (VillagerCache.get(villager) != null) {
-                continue;
-            }
-            List<TradeRule> tradeRules = config.trades;
-            if (tradeRules == null) {
                 continue;
             }
             System.out.println("  villager: UUID="+villager.getUuidAsString() + " " + villager);
