@@ -1,6 +1,5 @@
 package egorkhabarov.config;
 
-import java.util.Map;
 import java.util.List;
 
 public class ConfigData {
@@ -10,5 +9,6 @@ public class ConfigData {
     public double scan_radius = 2.0;
     public long villager_cache_ttl = 5000;
     public boolean need_see = true;
-    public Map<String, List<TradeRule>> professions;
+    public List<String> professions;
+    public List<TradeRule> trades;
 }

@@ -14,8 +14,6 @@ import net.minecraft.screen.sync.ItemStackHash;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
 
-import java.util.List;
-
 public class VillagerTradeExecutor {
     public static void finishAutoTrade(TradeOfferList offers) {
         MinecraftClient client = MinecraftClient.getInstance();
@@ -37,17 +35,15 @@ public class VillagerTradeExecutor {
                 continue;
             }
 
-            for (List<TradeRule> tradeRules : config.professions.values()) {
-                for (TradeRule tradeRule : tradeRules) {
-                    if (!tradeRule.enabled) {
-                        continue;
-                    }
+            for (TradeRule tradeRule : config.trades) {
+                if (!tradeRule.enabled) {
+                    continue;
+                }
 
-                    if (tradeRule.matchOffer(offer)) {
-                        System.out.println("        execute trade (" + player.currentScreenHandler.syncId + ", " + tradeIndex + ")");
-                        VillagerTradeExecutor.executeTrade(player.currentScreenHandler.syncId, tradeIndex);
-                        System.out.println("        {"+offer.getDisplayedFirstBuyItem()+", "+offer.getDisplayedSecondBuyItem()+"} == "+offer.getSellItem());
-                    }
+                if (tradeRule.matchOffer(offer)) {
+                    System.out.println("        execute trade (" + player.currentScreenHandler.syncId + ", " + tradeIndex + ")");
+                    VillagerTradeExecutor.executeTrade(player.currentScreenHandler.syncId, tradeIndex);
+                    System.out.println("        {"+offer.getDisplayedFirstBuyItem()+", "+offer.getDisplayedSecondBuyItem()+"} == "+offer.getSellItem());
                 }
             }
         }

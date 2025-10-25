@@ -36,7 +36,7 @@ public class VillagerFinder {
                 if (config.need_see && !player.canSee(v)) {
                     return false;
                 }
-                return config.professions.containsKey(v.getVillagerData().profession().getIdAsString());
+                return config.professions.contains(v.getVillagerData().profession().getIdAsString());
             }
         );
 
@@ -44,8 +44,7 @@ public class VillagerFinder {
             if (VillagerCache.get(villager) != null) {
                 continue;
             }
-            String villager_profession_id = villager.getVillagerData().profession().getIdAsString();
-            List<TradeRule> tradeRules = config.professions.get(villager_profession_id);
+            List<TradeRule> tradeRules = config.trades;
             if (tradeRules == null) {
                 continue;
             }

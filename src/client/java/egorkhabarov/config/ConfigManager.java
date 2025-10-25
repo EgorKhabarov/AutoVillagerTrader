@@ -72,46 +72,45 @@ public class ConfigManager {
     "scan_radius": 0.5,
     "villager_cache_ttl": 5000,
     "need_see": true,
-    "professions": {
-        "minecraft:farmer": [
-            {
-                "enabled": true,
-                "cooldown_ms": 500,
-                "left": {
-                    "item": "minecraft:melon",
-                    "count": {
-                        "condition": "<",
-                        "value": 5
-                    }
-                },
-                "right": {
-                    "item": "minecraft:emerald",
-                    "count": {
-                        "condition": "=",
-                        "value": 1
-                    }
+    "professions": ["minecraft:farmer"],
+    "trades": [
+        {
+            "enabled": true,
+            "cooldown_ms": 500,
+            "left": {
+                "item": "minecraft:melon",
+                "count": {
+                    "condition": "<",
+                    "value": 5
                 }
             },
-            {
-                "enabled": true,
-                "cooldown_ms": 500,
-                "left": {
-                    "item": "minecraft:pumpkin",
-                    "count": {
-                        "condition": "<",
-                        "value": 5
-                    }
-                },
-                "right": {
-                    "item": "minecraft:emerald",
-                    "count": {
-                        "condition": "=",
-                        "value": 1
-                    }
+            "right": {
+                "item": "minecraft:emerald",
+                "count": {
+                    "condition": "=",
+                    "value": 1
                 }
             }
-        ]
-    }
+        },
+        {
+            "enabled": true,
+            "cooldown_ms": 500,
+            "left": {
+                "item": "minecraft:pumpkin",
+                "count": {
+                    "condition": "<",
+                    "value": 5
+                }
+            },
+            "right": {
+                "item": "minecraft:emerald",
+                "count": {
+                    "condition": "=",
+                    "value": 1
+                }
+            }
+        }
+    ]
 }
         """;
     }
