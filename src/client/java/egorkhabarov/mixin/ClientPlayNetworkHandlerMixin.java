@@ -1,8 +1,6 @@
 package egorkhabarov.mixin;
 
 import egorkhabarov.AutoVillagerTraderModClient;
-import egorkhabarov.cache.VillagerCache;
-import egorkhabarov.cache.VillagerTradeQueue;
 import egorkhabarov.logic.VillagerTradeExecutor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -21,43 +19,13 @@ public class ClientPlayNetworkHandlerMixin {
         if (!AutoVillagerTraderModClient.CONFIG.enabled) {
             return;
         }
-        if (
-            client.player == null
-            // || VillagerCache.currentVillager == null
-            // || !VillagerTradeQueue.busy
-            // || VillagerCache.skipOffer
-        ) {
-            // if (VillagerCache.skipOffer) {
-            //     ci.cancel();
-            //     VillagerCache.skipOffer = false;
-            //     System.out.println("SKIP TradeOffers because skipOffer=true");
-            //     return;
-            // }
-            // ci.cancel();
-            // if (client.player == null) {
-            //     return;
-            // }
-            // client.execute(client.player::closeHandledScreen);
-            // System.out.println("CLOSE");
+        if (client.player == null) {
             return;
         }
-        // System.out.println("onSetTradeOffers player=" + client.player
-        //     + " currentVillager=" + VillagerCache.currentVillager
-        //     + " enabled=" + AutoVillagerTraderModClient.CONFIG.enabled
-        //     // + " skipOffer=" + VillagerCache.skipOffer
-        //     + " busy=" + VillagerTradeQueue.busy
-        //     + " PENDING.size()=" + VillagerTradeQueue.PENDING.size()
-        // );
         TradeOfferList offers = packet.getOffers();
-        // client.execute(() -> {
-            // ci.cancel();
-            System.out.println("    onSetTradeOffers ++");
-            VillagerTradeExecutor.finishAutoTrade(offers);
-            System.out.println("client.player.closeHandledScreen();");
-            client.player.closeHandledScreen();
-            // System.out.println("VillagerTradeQueue.markDone();");
-            // VillagerTradeQueue.markDone();
-            // System.out.println("AFTER markDone");
-        // });
+        System.out.println("    onSetTradeOffers ++");
+        VillagerTradeExecutor.finishAutoTrade(offers);
+        System.out.println("client.player.closeHandledScreen();");
+        client.player.closeHandledScreen();
     }
 }

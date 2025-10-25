@@ -11,11 +11,11 @@ public class ConditionChecker {
         double value = Double.parseDouble(cond.value.toString());
 
         return switch (op) {
-            case "<" -> actual < value;
-            case "<=" -> actual <= value;
             case "=" -> actual == value;
             case ">" -> actual > value;
+            case "<" -> actual < value;
             case ">=" -> actual >= value;
+            case "<=" -> actual <= value;
             default -> false;
         };
     }
