@@ -2,11 +2,14 @@ package egorkhabarov.logic;
 
 import egorkhabarov.AutoVillagerTraderModClient;
 import egorkhabarov.cache.VillagerCache;
-import egorkhabarov.cache.VillagerTradeQueue;
 import egorkhabarov.config.TradeRule;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import egorkhabarov.config.ConfigData;
+import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
+import net.minecraft.util.Hand;
 
 import java.util.List;
 
@@ -15,27 +18,28 @@ public class VillagerFinder {
 
     public static void tick() {
         ConfigData config = AutoVillagerTraderModClient.CONFIG;
-        if (client.world == null || client.player == null || !config.enabled || !config.auto_finder_enabled) {
+        ClientPlayerEntity player = client.player;
+        ClientPlayNetworkHandler networkHandler = client.getNetworkHandler();
+        if (
+            client.world == null
+                || player == null
+                || networkHandler == null
+                || !config.enabled
+                || !config.auto_finder_enabled
+        ) {
             return;
         }
-        // if (!VillagerTradeQueue.PENDING.isEmpty()) {
-        //     System.out.println("VillagerTradeQueue.PENDING = "+VillagerTradeQueue.PENDING);
-        //     return;
-        // }
         List<VillagerEntity> villagers = client.world.getEntitiesByClass(
             VillagerEntity.class,
-            client.player.getBoundingBox().expand(config.scan_radius),
+            player.getBoundingBox().expand(config.scan_radius),
             v -> {
-                if (config.need_see && !client.player.canSee(v)) {
+                if (config.need_see && !player.canSee(v)) {
                     return false;
                 }
                 return config.professions.containsKey(v.getVillagerData().profession().getIdAsString());
             }
         );
 
-        // if (!villagers.isEmpty()) {
-        //     System.out.println("for (VillagerEntity villager : villagers{" + villagers.size() + "})");
-        // }
         for (VillagerEntity villager : villagers) {
             if (VillagerCache.get(villager) != null) {
                 continue;
@@ -46,12 +50,15 @@ public class VillagerFinder {
                 continue;
             }
             System.out.println("  villager: UUID="+villager.getUuidAsString() + " " + villager);
-            // VillagerTradeQueue.add(villager);
-            VillagerTradeExecutor.openTrade(villager);
+
+            try {
+                PlayerInteractEntityC2SPacket packet = PlayerInteractEntityC2SPacket.interact(villager, false, Hand.MAIN_HAND);
+                networkHandler.sendPacket(packet);
+            } catch (Exception e) {
+                break;
+            }
+            VillagerCache.put(villager);
             break;
         }
-        // if (!villagers.isEmpty()) {
-        //     System.out.println("} size("+VillagerTradeQueue.PENDING.size()+") {"+VillagerTradeQueue.PENDING+"}");
-        // }
     }
 }

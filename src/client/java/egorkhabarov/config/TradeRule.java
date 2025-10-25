@@ -2,14 +2,14 @@ package egorkhabarov.config;
 
 import egorkhabarov.logic.ConditionChecker;
 import net.minecraft.village.TradeOffer;
+import org.jetbrains.annotations.Nullable;
 
 public class TradeRule {
     public boolean enabled = true;
     public long cooldown_ms = 0;
-    public String comment;
-    public TradeItemSide left;   // то, что игрок отдаёт
-    public TradeItemSide left2;  // если у сделки две вещи слева (опционально)
-    public TradeItemSide right;  // то, что игрок получает
+    public TradeItemSide left;
+    public @Nullable TradeItemSide left2;  // Optional
+    public TradeItemSide right;
 
     public boolean matchOffer(TradeOffer offer) {
         String default_item = "minecraft:air";
