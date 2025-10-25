@@ -1,15 +1,23 @@
 package egorkhabarov.config;
 
-import java.util.Map;
+import egorkhabarov.logic.ConditionChecker;
+import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
+
+import java.util.Objects;
 
 public class TradeItemSide {
     public String item;
     public Condition count;
-    public Condition price;              // если есть понятие "цены" в сделке
-    public Condition nbt;                // проверки по NBT (частично или полностью)
-    public Map<String, Object> nbtMatch; // конкретное NBT-содержимое (в формате JSON)
 
     public String getTradeId() {
         return item.replace("minecraft:", "")+"_"+count.getConditionId();
+    }
+
+    public boolean match(ItemStack stack) {
+        Identifier stackId = Registries.ITEM.getId(stack.getItem());
+        return Objects.equals(stackId.toString(), this.item)
+            && ConditionChecker.match(this.count, stack.getCount());
     }
 }

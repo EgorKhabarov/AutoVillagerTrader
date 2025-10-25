@@ -1,6 +1,5 @@
 package egorkhabarov.config;
 
-import egorkhabarov.logic.ConditionChecker;
 import net.minecraft.village.TradeOffer;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,11 +14,16 @@ public class TradeRule {
     public TradeItemSide right;
 
     public boolean matchOffer(TradeOffer offer) {
-        String default_item = "minecraft:air";
-        return (this.left != null ? this.left.item : default_item).equals(offer.getDisplayedFirstBuyItem().getItem().toString())
-            && (this.left2 != null ? this.left2.item : default_item).equals(offer.getDisplayedSecondBuyItem().getItem().toString())
-            && (this.right != null ? this.right.item : default_item).equals(offer.getSellItem().getItem().toString())
-            && (ConditionChecker.match(this.left.count, offer.getDisplayedFirstBuyItem().getCount()));
+        if (left == null || !left.match(offer.getDisplayedFirstBuyItem())) {
+            return false;
+        }
+        if (left2 == null || !left2.match(offer.getDisplayedSecondBuyItem())) {
+            return false;
+        }
+        if (right == null || !right.match(offer.getSellItem())) {
+            return false;
+        }
+        return true;
     }
 
     public String getRuleId() {
