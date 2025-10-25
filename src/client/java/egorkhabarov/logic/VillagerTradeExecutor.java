@@ -1,7 +1,6 @@
 package egorkhabarov.logic;
 
 import egorkhabarov.AutoVillagerTraderModClient;
-import egorkhabarov.cache.VillagerCache;
 import egorkhabarov.config.ConfigData;
 import egorkhabarov.config.TradeRule;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
