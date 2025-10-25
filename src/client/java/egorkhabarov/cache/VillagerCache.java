@@ -1,5 +1,6 @@
 package egorkhabarov.cache;
 
+import egorkhabarov.AutoVillagerTraderModClient;
 import net.minecraft.entity.passive.VillagerEntity;
 
 import java.util.Map;
@@ -9,7 +10,6 @@ public class VillagerCache {
     public static VillagerEntity currentVillager;
 
     private static final ConcurrentHashMap<String, CacheEntry> cache = new ConcurrentHashMap<>();
-    private static final long TTL_MILLIS = 5000;  // TODO config
     private static final int MAX_SIZE = 50;
 
     public static void put(String key, VillagerEntity villager) {
@@ -24,6 +24,7 @@ public class VillagerCache {
         if (entry == null) {
             return null;
         }
+        long TTL_MILLIS = AutoVillagerTraderModClient.CONFIG.villager_cache_ttl;
         if (System.currentTimeMillis() - entry.timestamp > TTL_MILLIS) {
             cache.remove(key);
             return null;
@@ -41,6 +42,7 @@ public class VillagerCache {
 
     public static void cleanup() {
         long now = System.currentTimeMillis();
+        long TTL_MILLIS = AutoVillagerTraderModClient.CONFIG.villager_cache_ttl;
         for (Map.Entry<String, CacheEntry> e : cache.entrySet()) {
             if (now - e.getValue().timestamp > TTL_MILLIS) {
                 cache.remove(e.getKey());
