@@ -16,9 +16,8 @@
 	"icon": "assets/auto_villager_trader/icon.png",
 	"environment": "client",
 	"entrypoints": {
-		"client": [
-			"egorkhabarov.AutoVillagerTraderModClient"
-		]
+		"client": ["egorkhabarov.AutoVillagerTraderModClient"],
+        "modmenu": ["egorkhabarov.config.ModMenuIntegration"]
 	},
 	"mixins": [
 		{
@@ -33,7 +32,7 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"another-mod": "*"
+        "modmenu": "*"
 	},
     "custom": {
         "modmenu": {

@@ -7,5 +7,8 @@
     "message.autotrader.auto_trader_enabled": "AutoTrader enabled",
     "message.autotrader.auto_trader_disabled": "AutoTrader disabled",
     "message.autotrader.auto_finder_enabled": "AutoFinder enabled",
-    "message.autotrader.auto_finder_disabled": "AutoFinder disabled"
+    "message.autotrader.auto_finder_disabled": "AutoFinder disabled",
+    "avt_menu.title": "Trades Settings",
+    "avt_menu.trades": "Trades",
+    "avt_menu.deprecated": "Villagers restock up to two times per day."
 }
