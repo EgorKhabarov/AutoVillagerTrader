@@ -7,7 +7,7 @@ import net.minecraft.util.Formatting;
 
 public class ChatUtils {
     private static final Text prefix = Text.literal("[")
-        .append(Text.literal("AVT").formatted(Formatting.GREEN))
+        .append(Text.literal("AVT").formatted(Formatting.YELLOW))
         .append(Text.literal("] "));
 
     public static void sendModMessage(Object... parts) {
