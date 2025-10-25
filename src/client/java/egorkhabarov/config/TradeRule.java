@@ -18,4 +18,18 @@ public class TradeRule {
             && (this.right != null ? this.right.item : default_item).equals(offer.getSellItem().getItem().toString())
             && (ConditionChecker.match(this.left.count, offer.getDisplayedFirstBuyItem().getCount()));
     }
+
+    public String getRuleId() {
+        String result = "";
+        if (left != null) {
+            result += left.getTradeId() + "_";
+        }
+        if (left2 != null) {
+            result += left2.getTradeId() + "_";
+        }
+        if (right != null) {
+            result += right.getTradeId();
+        }
+        return result;
+    }
 }
