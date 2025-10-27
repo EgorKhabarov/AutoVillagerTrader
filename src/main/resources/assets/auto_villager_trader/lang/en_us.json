@@ -11,7 +11,11 @@
     "message.autotrader.auto_finder_disabled": "AutoFinder disabled",
     "avt_menu.title": "Trades Settings",
     "avt_menu.add_trade.title": "Add Trade",
+    "avt_menu.update_trade.title": "Add Trade",
     "avt_menu.trades": "Trades",
     "avt_menu.deprecated": "Villagers restock up to two times per day.",
-    "avt_menu.rule_tooltip": "Click to toggle this rule"
+    "avt_menu.button.toggle": "Toggle",
+    "avt_menu.button.add": "Add",
+    "avt_menu.button.remove": "Remove",
+    "avt_menu.button.update": "Update"
 }

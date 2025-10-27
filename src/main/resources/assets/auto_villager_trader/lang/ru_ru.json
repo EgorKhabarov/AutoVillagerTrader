@@ -2,5 +2,9 @@
     "avt_menu.title": "Настройки торгов",
     "avt_menu.trades": "Торги",
     "avt_menu.add_trade.title": "Добавить торг",
-    "avt_menu.rule_tooltip": "Нажмите, чтобы переключить это правило"
+    "avt_menu.update_trade.title": "Обновить торг",
+    "avt_menu.button.toggle": "Переключить",
+    "avt_menu.button.add": "Добавить",
+    "avt_menu.button.remove": "Удалить",
+    "avt_menu.button.update": "Изменить"
 }
