@@ -39,19 +39,19 @@ public class VillagerTradeEditorScreen extends Screen {
 
     private static final Identifier TEXTURE                        = Identifier.of("auto_villager_trader", "textures/gui/villager_trade_add.png");
 
-    static final Identifier CONFIRM_TEXTURE = Identifier.ofVanilla("container/beacon/confirm");
+    static final Identifier BUTTON_TEXTURE = Identifier.ofVanilla("container/beacon/button");
     static final Identifier BUTTON_DISABLED_TEXTURE = Identifier.ofVanilla("container/beacon/button_disabled");
     static final Identifier BUTTON_SELECTED_TEXTURE = Identifier.ofVanilla("container/beacon/button_selected");
     static final Identifier BUTTON_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("container/beacon/button_highlighted");
-    static final Identifier BUTTON_TEXTURE = Identifier.ofVanilla("container/beacon/button");
-
-    private static final Text TITLE = Text.translatable("avt_menu.add_trade.title");
+    static final Identifier CONFIRM_TEXTURE = Identifier.ofVanilla("container/beacon/confirm");
+    static final Identifier CANCEL_TEXTURE = Identifier.ofVanilla("container/beacon/cancel");
 
     private final Screen parent;
     private static final int WIDTH = 276;
     private static final int HEIGHT = 166;
 
     private VillagerTradeEditorScreen.ConfirmButtonWidget confirmButton;
+    private VillagerTradeEditorScreen.CancelButtonWidget cancelButton;
 
     private ColoredTextFieldWidget leftItemField;
     private ColoredTextFieldWidget leftConditionField;
@@ -74,12 +74,22 @@ public class VillagerTradeEditorScreen extends Screen {
     private boolean rightConditionValueError = true;
 
     private final List<Slot> slots = new ArrayList<>();
+    private int initialDataIndex;
+    private final TradeRule initialData;
 
     private static final Set<String> conditionValues = Set.of("=", "==", "<", ">", "<=", ">=");
 
     public VillagerTradeEditorScreen(Screen parent) {
-        super(TITLE);
+        super(Text.translatable("avt_menu.add_trade.title"));
         this.parent = parent;
+        this.initialData = null;
+    }
+
+    public VillagerTradeEditorScreen(Screen parent, int index, TradeRule tradeRule) {
+        super(Text.translatable("avt_menu.update_trade.title"));
+        this.parent = parent;
+        this.initialDataIndex = index;
+        this.initialData = tradeRule;
     }
 
     private ColoredTextFieldWidget createTextFieldWidget(int x, int y, int width, int height, Text text, Function<String, Boolean> isValidFunc) {
@@ -110,7 +120,10 @@ public class VillagerTradeEditorScreen extends Screen {
         int width1 = 112, width2 = 24, width3 = 24;
         int height1 = 16, height2 = 16, height3 = 16;
 
-        this.confirmButton = new VillagerTradeEditorScreen.ConfirmButtonWidget(i + 164+68, j + 107+15);
+        this.cancelButton = new VillagerTradeEditorScreen.CancelButtonWidget(i + 230, j + 78);
+        this.addDrawableChild(cancelButton);
+
+        this.confirmButton = new VillagerTradeEditorScreen.ConfirmButtonWidget(i + 230, j + 110);
         this.addDrawableChild(confirmButton);
 
         this.leftItemField            = createTextFieldWidget(x1, y1, width1, height1, Text.translatable("container.repair"), VillagerTradeEditorScreen::isValidItem);
@@ -153,10 +166,35 @@ public class VillagerTradeEditorScreen extends Screen {
         this.addDrawableChild(this.left2ConditionValueField);
         this.addDrawableChild(this.rightConditionValueField);
 
+        if (this.leftConditionField.getText().isEmpty()) this.leftConditionField.setText("");
+        if (this.left2ConditionField.getText().isEmpty()) this.left2ConditionField.setText("");
+        if (this.rightConditionField.getText().isEmpty()) this.rightConditionField.setText("");
+        if (this.leftConditionValueField.getText().isEmpty()) this.leftConditionValueField.setText("");
+        if (this.left2ConditionValueField.getText().isEmpty()) this.left2ConditionValueField.setText("");
+        if (this.rightConditionValueField.getText().isEmpty()) this.rightConditionValueField.setText("");
+
         this.slots.clear();
         this.slots.add(new Slot(i + 89, j + 22, null));
         this.slots.add(new Slot(i + 115, j + 22, null));
         this.slots.add(new Slot(i + 173, j + 22, null));
+
+        if (this.initialData != null) {
+            if (this.initialData.left != null) {
+                this.leftItemField.setText(this.initialData.left.item);
+                this.leftConditionField.setText(this.initialData.left.count.condition);
+                this.leftConditionValueField.setText(this.initialData.left.count.value.toString());
+            }
+            if (this.initialData.left2 != null) {
+                this.left2ItemField.setText(this.initialData.left2.item);
+                this.left2ConditionField.setText(this.initialData.left2.count.condition);
+                this.left2ConditionValueField.setText(this.initialData.left2.count.value.toString());
+            }
+            if (this.initialData.right != null) {
+                this.rightItemField.setText(this.initialData.right.item);
+                this.rightConditionField.setText(this.initialData.right.count.condition);
+                this.rightConditionValueField.setText(this.initialData.right.count.value.toString());
+            }
+        }
     }
 
     protected void drawBackground(DrawContext context, float deltaTicks, int mouseX, int mouseY) {
@@ -419,6 +457,18 @@ public class VillagerTradeEditorScreen extends Screen {
     }
 
     @Environment(EnvType.CLIENT)
+    class CancelButtonWidget extends VillagerTradeEditorScreen.IconButtonWidget {
+        public CancelButtonWidget(final int x, final int y) {
+            super(x, y, VillagerTradeEditorScreen.CANCEL_TEXTURE, ScreenTexts.CANCEL);
+        }
+
+        public void onPress() {
+            VillagerTradeEditorScreen.this.close();
+        }
+
+    }
+
+    @Environment(EnvType.CLIENT)
     class ConfirmButtonWidget extends VillagerTradeEditorScreen.IconButtonWidget {
         public ConfirmButtonWidget(final int x, final int y) {
             super(x, y, VillagerTradeEditorScreen.CONFIRM_TEXTURE, ScreenTexts.DONE);
@@ -452,7 +502,16 @@ public class VillagerTradeEditorScreen extends Screen {
                     )
                 )
             );
-            AutoVillagerTraderModClient.CONFIG.trades.add(newRule);
+
+            if (VillagerTradeEditorScreen.this.initialData != null) {
+                // update
+                if (VillagerTradeEditorScreen.this.initialDataIndex < AutoVillagerTraderModClient.CONFIG.trades.size()) {
+                    AutoVillagerTraderModClient.CONFIG.trades.set(VillagerTradeEditorScreen.this.initialDataIndex, newRule);
+                }
+            } else {
+                // add
+                AutoVillagerTraderModClient.CONFIG.trades.add(newRule);
+            }
             ConfigManager.saveConfig();
 
             VillagerTradeEditorScreen.this.close();
