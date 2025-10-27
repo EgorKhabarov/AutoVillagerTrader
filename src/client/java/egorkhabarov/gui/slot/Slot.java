@@ -52,12 +52,7 @@ public class Slot {
     ) {
         context.drawItem(itemStack, x, y);
         if (condition != null) {
-            String overlay = (
-                condition.condition.equals("=") || condition.condition.equals("==")
-                ? "" : condition.condition
-            ) + (
-                condition.value == 1 ? "" : condition.value
-            );
+            String overlay = getOverlay(condition);
             context.drawStackOverlay(textRenderer, itemStack, x, y, overlay);
         } else {
             context.drawStackOverlay(textRenderer, itemStack, x, y);
@@ -69,6 +64,25 @@ public class Slot {
             }
             context.drawItemTooltip(textRenderer, itemStack, mouseX, mouseY);
         }
+    }
+
+    private static @NotNull String getOverlay(@NotNull Condition condition) {
+        String overlay = (
+            condition.condition.equals("=") || condition.condition.equals("==")
+            ? "" : condition.condition
+        ) + (
+            condition.value == 1 ? "" : condition.value
+        );
+        if (condition.condition.equals(">=") && condition.value == 1) {
+            overlay = "*";
+        }
+        if (condition.condition.equals(">") && condition.value == 0) {
+            overlay = "*";
+        }
+        if (condition.condition.equals(">") && condition.value == 1) {
+            overlay = ">1";
+        }
+        return overlay;
     }
 
     public static void renderSlotItem(
