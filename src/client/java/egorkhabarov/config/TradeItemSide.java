@@ -11,6 +11,11 @@ public class TradeItemSide {
     public String item;
     public Condition count;
 
+    public TradeItemSide(String item, Condition count) {
+        this.item = item;
+        this.count = count;
+    }
+
     public String getTradeId() {
         return item.replace("minecraft:", "")+"_"+count.getConditionId();
     }

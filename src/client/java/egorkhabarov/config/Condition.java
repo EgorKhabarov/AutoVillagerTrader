@@ -2,7 +2,12 @@ package egorkhabarov.config;
 
 public class Condition {
     public String condition; // "<", "<=", "=", ">=", ">", "in", "range", "match"
-    public Object value;     // число, диапазон, список или объект
+    public Integer value;     // число, диапазон, список или объект
+
+    public Condition(String condition, Integer value) {
+        this.condition = condition;
+        this.value = value;
+    }
 
     private static String translate(String condition) {
         return switch (condition) {
