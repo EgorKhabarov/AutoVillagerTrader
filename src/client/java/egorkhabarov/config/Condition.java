@@ -12,6 +12,7 @@ public class Condition {
     private static String translate(String condition) {
         return switch (condition) {
             case "=" -> "eq";
+            case "==" -> "eq";
             case ">" -> "mt";
             case "<" -> "lt";
             case ">=" -> "me";
