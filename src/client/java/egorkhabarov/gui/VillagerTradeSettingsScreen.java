@@ -99,7 +99,7 @@ public class VillagerTradeSettingsScreen extends Screen {
         this.selectedIndex = 0;
 
         if (this.client != null) {
-            this.client.setScreen(new VillagerTradeAddScreen(this));
+            this.client.setScreen(new VillagerTradeEditorScreen(this));
         }
     }
 

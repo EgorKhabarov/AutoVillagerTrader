@@ -31,7 +31,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
-public class VillagerTradeAddScreen extends Screen {
+public class VillagerTradeEditorScreen extends Screen {
     private static final Identifier TEXT_FIELD_LONG_TEXTURE        = Identifier.of("auto_villager_trader", "container/text_field_long");
     private static final Identifier TEXT_FIELD_SHORT_TEXTURE       = Identifier.of("auto_villager_trader", "container/text_field_short");
     private static final Identifier TEXT_FIELD_LONG_ERROR_TEXTURE  = Identifier.of("auto_villager_trader", "container/text_field_long_error");
@@ -51,7 +51,7 @@ public class VillagerTradeAddScreen extends Screen {
     private static final int WIDTH = 276;
     private static final int HEIGHT = 166;
 
-    private VillagerTradeAddScreen.ConfirmButtonWidget confirmButton;
+    private VillagerTradeEditorScreen.ConfirmButtonWidget confirmButton;
 
     private ColoredTextFieldWidget leftItemField;
     private ColoredTextFieldWidget leftConditionField;
@@ -77,7 +77,7 @@ public class VillagerTradeAddScreen extends Screen {
 
     private static final Set<String> conditionValues = Set.of("=", "==", "<", ">", "<=", ">=");
 
-    public VillagerTradeAddScreen(Screen parent) {
+    public VillagerTradeEditorScreen(Screen parent) {
         super(TITLE);
         this.parent = parent;
     }
@@ -110,18 +110,18 @@ public class VillagerTradeAddScreen extends Screen {
         int width1 = 112, width2 = 24, width3 = 24;
         int height1 = 16, height2 = 16, height3 = 16;
 
-        this.confirmButton = new VillagerTradeAddScreen.ConfirmButtonWidget(i + 164+68, j + 107+15);
+        this.confirmButton = new VillagerTradeEditorScreen.ConfirmButtonWidget(i + 164+68, j + 107+15);
         this.addDrawableChild(confirmButton);
 
-        this.leftItemField            = createTextFieldWidget(x1, y1, width1, height1, Text.translatable("container.repair"), VillagerTradeAddScreen::isValidItem);
-        this.left2ItemField           = createTextFieldWidget(x1, y2, width1, height1, Text.translatable("container.repair"), VillagerTradeAddScreen::isValidItem);
-        this.rightItemField           = createTextFieldWidget(x1, y3, width1, height1, Text.translatable("container.repair"), VillagerTradeAddScreen::isValidItem);
-        this.leftConditionField       = createTextFieldWidget(x2, y1, width2, height2, Text.translatable("container.repair"), VillagerTradeAddScreen.conditionValues::contains);
-        this.left2ConditionField      = createTextFieldWidget(x2, y2, width2, height2, Text.translatable("container.repair"), VillagerTradeAddScreen.conditionValues::contains);
-        this.rightConditionField      = createTextFieldWidget(x2, y3, width2, height2, Text.translatable("container.repair"), VillagerTradeAddScreen.conditionValues::contains);
-        this.leftConditionValueField  = createTextFieldWidget(x3, y1, width3, height3, Text.translatable("container.repair"), VillagerTradeAddScreen::isValidConditionValue);
-        this.left2ConditionValueField = createTextFieldWidget(x3, y2, width3, height3, Text.translatable("container.repair"), VillagerTradeAddScreen::isValidConditionValue);
-        this.rightConditionValueField = createTextFieldWidget(x3, y3, width3, height3, Text.translatable("container.repair"), VillagerTradeAddScreen::isValidConditionValue);
+        this.leftItemField            = createTextFieldWidget(x1, y1, width1, height1, Text.translatable("container.repair"), VillagerTradeEditorScreen::isValidItem);
+        this.left2ItemField           = createTextFieldWidget(x1, y2, width1, height1, Text.translatable("container.repair"), VillagerTradeEditorScreen::isValidItem);
+        this.rightItemField           = createTextFieldWidget(x1, y3, width1, height1, Text.translatable("container.repair"), VillagerTradeEditorScreen::isValidItem);
+        this.leftConditionField       = createTextFieldWidget(x2, y1, width2, height2, Text.translatable("container.repair"), VillagerTradeEditorScreen.conditionValues::contains);
+        this.left2ConditionField      = createTextFieldWidget(x2, y2, width2, height2, Text.translatable("container.repair"), VillagerTradeEditorScreen.conditionValues::contains);
+        this.rightConditionField      = createTextFieldWidget(x2, y3, width2, height2, Text.translatable("container.repair"), VillagerTradeEditorScreen.conditionValues::contains);
+        this.leftConditionValueField  = createTextFieldWidget(x3, y1, width3, height3, Text.translatable("container.repair"), VillagerTradeEditorScreen::isValidConditionValue);
+        this.left2ConditionValueField = createTextFieldWidget(x3, y2, width3, height3, Text.translatable("container.repair"), VillagerTradeEditorScreen::isValidConditionValue);
+        this.rightConditionValueField = createTextFieldWidget(x3, y3, width3, height3, Text.translatable("container.repair"), VillagerTradeEditorScreen::isValidConditionValue);
 
         this.leftItemField.setMaxLength(128);
         this.left2ItemField.setMaxLength(128);
@@ -376,13 +376,13 @@ public class VillagerTradeAddScreen extends Screen {
         public void renderWidget(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
             Identifier identifier;
             if (!this.active) {
-                identifier = VillagerTradeAddScreen.BUTTON_DISABLED_TEXTURE;
+                identifier = VillagerTradeEditorScreen.BUTTON_DISABLED_TEXTURE;
             } else if (this.disabled) {
-                identifier = VillagerTradeAddScreen.BUTTON_SELECTED_TEXTURE;
+                identifier = VillagerTradeEditorScreen.BUTTON_SELECTED_TEXTURE;
             } else if (this.isSelected()) {
-                identifier = VillagerTradeAddScreen.BUTTON_HIGHLIGHTED_TEXTURE;
+                identifier = VillagerTradeEditorScreen.BUTTON_HIGHLIGHTED_TEXTURE;
             } else {
-                identifier = VillagerTradeAddScreen.BUTTON_TEXTURE;
+                identifier = VillagerTradeEditorScreen.BUTTON_TEXTURE;
             }
 
             context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, identifier, this.getX(), this.getY(), this.width, this.height);
@@ -405,7 +405,7 @@ public class VillagerTradeAddScreen extends Screen {
     }
 
     @Environment(EnvType.CLIENT)
-    abstract static class IconButtonWidget extends VillagerTradeAddScreen.BaseButtonWidget {
+    abstract static class IconButtonWidget extends VillagerTradeEditorScreen.BaseButtonWidget {
         private final Identifier texture;
 
         protected IconButtonWidget(int x, int y, Identifier texture, Text message) {
@@ -419,9 +419,9 @@ public class VillagerTradeAddScreen extends Screen {
     }
 
     @Environment(EnvType.CLIENT)
-    class ConfirmButtonWidget extends VillagerTradeAddScreen.IconButtonWidget {
+    class ConfirmButtonWidget extends VillagerTradeEditorScreen.IconButtonWidget {
         public ConfirmButtonWidget(final int x, final int y) {
-            super(x, y, VillagerTradeAddScreen.CONFIRM_TEXTURE, ScreenTexts.DONE);
+            super(x, y, VillagerTradeEditorScreen.CONFIRM_TEXTURE, ScreenTexts.DONE);
         }
 
         public void onPress() {
@@ -431,31 +431,31 @@ public class VillagerTradeAddScreen extends Screen {
             TradeRule newRule = new TradeRule(
                 List.of("minecraft:farmer"),
                 new TradeItemSide(
-                    getValidItemString(VillagerTradeAddScreen.this.leftItemField.getText()),
+                    getValidItemString(VillagerTradeEditorScreen.this.leftItemField.getText()),
                     new Condition(
-                        VillagerTradeAddScreen.this.leftConditionField.getText(),
-                        Integer.parseInt(VillagerTradeAddScreen.this.leftConditionValueField.getText())
+                        VillagerTradeEditorScreen.this.leftConditionField.getText(),
+                        Integer.parseInt(VillagerTradeEditorScreen.this.leftConditionValueField.getText())
                     )
                 ),
-                VillagerTradeAddScreen.this.left2ItemField.getText().isEmpty() ? null : new TradeItemSide(
-                    getValidItemString(VillagerTradeAddScreen.this.left2ItemField.getText()),
+                VillagerTradeEditorScreen.this.left2ItemField.getText().isEmpty() ? null : new TradeItemSide(
+                    getValidItemString(VillagerTradeEditorScreen.this.left2ItemField.getText()),
                     new Condition(
-                        VillagerTradeAddScreen.this.left2ConditionField.getText(),
-                        Integer.parseInt(VillagerTradeAddScreen.this.left2ConditionValueField.getText())
+                        VillagerTradeEditorScreen.this.left2ConditionField.getText(),
+                        Integer.parseInt(VillagerTradeEditorScreen.this.left2ConditionValueField.getText())
                     )
                 ),
                 new TradeItemSide(
-                    getValidItemString(VillagerTradeAddScreen.this.rightItemField.getText()),
+                    getValidItemString(VillagerTradeEditorScreen.this.rightItemField.getText()),
                     new Condition(
-                        VillagerTradeAddScreen.this.rightConditionField.getText(),
-                        Integer.parseInt(VillagerTradeAddScreen.this.rightConditionValueField.getText())
+                        VillagerTradeEditorScreen.this.rightConditionField.getText(),
+                        Integer.parseInt(VillagerTradeEditorScreen.this.rightConditionValueField.getText())
                     )
                 )
             );
             AutoVillagerTraderModClient.CONFIG.trades.add(newRule);
             ConfigManager.saveConfig();
 
-            VillagerTradeAddScreen.this.close();
+            VillagerTradeEditorScreen.this.close();
         }
     }
 
