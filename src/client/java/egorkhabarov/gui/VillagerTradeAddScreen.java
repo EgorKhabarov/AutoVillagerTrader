@@ -5,8 +5,11 @@ import egorkhabarov.config.Condition;
 import egorkhabarov.config.ConfigManager;
 import egorkhabarov.config.TradeItemSide;
 import egorkhabarov.config.TradeRule;
+import egorkhabarov.gui.slot.Slot;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -14,14 +17,18 @@ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
 import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 @Environment(EnvType.CLIENT)
 public class VillagerTradeAddScreen extends Screen {
@@ -46,45 +53,49 @@ public class VillagerTradeAddScreen extends Screen {
 
     private VillagerTradeAddScreen.ConfirmButtonWidget confirmButton;
 
-    private TextFieldWidget leftItemField;
-    private TextFieldWidget leftConditionField;
-    private TextFieldWidget leftConditionValueField;
-    private TextFieldWidget left2ItemField;
-    private TextFieldWidget left2ConditionField;
-    private TextFieldWidget left2ConditionValueField;
-    private TextFieldWidget rightItemField;
-    private TextFieldWidget rightConditionField;
-    private TextFieldWidget rightConditionValueField;
+    private ColoredTextFieldWidget leftItemField;
+    private ColoredTextFieldWidget leftConditionField;
+    private ColoredTextFieldWidget leftConditionValueField;
+    private ColoredTextFieldWidget left2ItemField;
+    private ColoredTextFieldWidget left2ConditionField;
+    private ColoredTextFieldWidget left2ConditionValueField;
+    private ColoredTextFieldWidget rightItemField;
+    private ColoredTextFieldWidget rightConditionField;
+    private ColoredTextFieldWidget rightConditionValueField;
 
-    private boolean leftItemError = false;
-    private boolean leftConditionError = false;
-    private boolean leftConditionValueError = false;
-    private boolean left2ItemError = false;
-    private boolean left2ConditionError = false;
-    private boolean left2ConditionValueError = false;
-    private boolean rightItemError = false;
-    private boolean rightConditionError = false;
-    private boolean rightConditionValueError = false;
+    private boolean leftItemError = true;
+    private boolean leftConditionError = true;
+    private boolean leftConditionValueError = true;
+    private boolean left2ItemError = true;
+    private boolean left2ConditionError = true;
+    private boolean left2ConditionValueError = true;
+    private boolean rightItemError = true;
+    private boolean rightConditionError = true;
+    private boolean rightConditionValueError = true;
 
-    Set<String> conditionValues = Set.of("=", "==", "<", ">", "<=", ">=");
+    private final List<Slot> slots = new ArrayList<>();
+
+    private static final Set<String> conditionValues = Set.of("=", "==", "<", ">", "<=", ">=");
 
     public VillagerTradeAddScreen(Screen parent) {
         super(TITLE);
         this.parent = parent;
     }
 
-    private TextFieldWidget createButton(int x, int y, int width, int height, Text text) {
+    private ColoredTextFieldWidget createTextFieldWidget(int x, int y, int width, int height, Text text, Function<String, Boolean> isValidFunc) {
         int i = (this.width - WIDTH) / 2;
         int j = (this.height - HEIGHT) / 2;
-        TextFieldWidget textField = new TextFieldWidget(this.textRenderer, i + x + 3, j + y + 4, width - 7, height - 4, text);
-        // textField.setFocusUnlocked(false);
-        // textField.setEditableColor(-1);
-        // textField.setUneditableColor(-1);
+        ColoredTextFieldWidget textField = new ColoredTextFieldWidget(
+            this.textRenderer,
+            i + x + 3, j + y + 4, width - 7, height - 4,
+            text,
+            isValidFunc
+        );
+        textField.setFocusedColor(-2039584);
+        textField.setUnfocusedColor(-9408400);
+
         textField.setDrawsBackground(false);
-        // textField.setMaxLength(50);
-        // nameField.setChangedListener(this::onRenamed);
         textField.setText("");
-        // textField.setEditable(this.);
         return textField;
     }
 
@@ -102,15 +113,15 @@ public class VillagerTradeAddScreen extends Screen {
         this.confirmButton = new VillagerTradeAddScreen.ConfirmButtonWidget(i + 164+68, j + 107+15);
         this.addDrawableChild(confirmButton);
 
-        this.leftItemField            = createButton(x1, y1, width1, height1, Text.translatable("container.repair"));
-        this.left2ItemField           = createButton(x1, y2, width1, height1, Text.translatable("container.repair"));
-        this.rightItemField           = createButton(x1, y3, width1, height1, Text.translatable("container.repair"));
-        this.leftConditionField       = createButton(x2, y1, width2, height2, Text.translatable("container.repair"));
-        this.left2ConditionField      = createButton(x2, y2, width2, height2, Text.translatable("container.repair"));
-        this.rightConditionField      = createButton(x2, y3, width2, height2, Text.translatable("container.repair"));
-        this.leftConditionValueField  = createButton(x3, y1, width3, height3, Text.translatable("container.repair"));
-        this.left2ConditionValueField = createButton(x3, y2, width3, height3, Text.translatable("container.repair"));
-        this.rightConditionValueField = createButton(x3, y3, width3, height3, Text.translatable("container.repair"));
+        this.leftItemField            = createTextFieldWidget(x1, y1, width1, height1, Text.translatable("container.repair"), VillagerTradeAddScreen::isValidItem);
+        this.left2ItemField           = createTextFieldWidget(x1, y2, width1, height1, Text.translatable("container.repair"), VillagerTradeAddScreen::isValidItem);
+        this.rightItemField           = createTextFieldWidget(x1, y3, width1, height1, Text.translatable("container.repair"), VillagerTradeAddScreen::isValidItem);
+        this.leftConditionField       = createTextFieldWidget(x2, y1, width2, height2, Text.translatable("container.repair"), VillagerTradeAddScreen.conditionValues::contains);
+        this.left2ConditionField      = createTextFieldWidget(x2, y2, width2, height2, Text.translatable("container.repair"), VillagerTradeAddScreen.conditionValues::contains);
+        this.rightConditionField      = createTextFieldWidget(x2, y3, width2, height2, Text.translatable("container.repair"), VillagerTradeAddScreen.conditionValues::contains);
+        this.leftConditionValueField  = createTextFieldWidget(x3, y1, width3, height3, Text.translatable("container.repair"), VillagerTradeAddScreen::isValidConditionValue);
+        this.left2ConditionValueField = createTextFieldWidget(x3, y2, width3, height3, Text.translatable("container.repair"), VillagerTradeAddScreen::isValidConditionValue);
+        this.rightConditionValueField = createTextFieldWidget(x3, y3, width3, height3, Text.translatable("container.repair"), VillagerTradeAddScreen::isValidConditionValue);
 
         this.leftItemField.setMaxLength(128);
         this.left2ItemField.setMaxLength(128);
@@ -141,6 +152,11 @@ public class VillagerTradeAddScreen extends Screen {
         this.addDrawableChild(this.leftConditionValueField);
         this.addDrawableChild(this.left2ConditionValueField);
         this.addDrawableChild(this.rightConditionValueField);
+
+        this.slots.clear();
+        this.slots.add(new Slot(i + 89, j + 22, null));
+        this.slots.add(new Slot(i + 115, j + 22, null));
+        this.slots.add(new Slot(i + 173, j + 22, null));
     }
 
     protected void drawBackground(DrawContext context, float deltaTicks, int mouseX, int mouseY) {
@@ -151,15 +167,15 @@ public class VillagerTradeAddScreen extends Screen {
         int x1 = i+16, x2 = i+144, x3 = i+184;
         int y1 = j+64, y2 = j+96, y3 = j+128;
 
-        Identifier leftItemTexture            = this.leftItemError            ? TEXT_FIELD_LONG_TEXTURE  : TEXT_FIELD_LONG_ERROR_TEXTURE;
-        Identifier left2ItemTexture           = this.left2ItemError           ? TEXT_FIELD_LONG_TEXTURE  : TEXT_FIELD_LONG_ERROR_TEXTURE;
-        Identifier rightItemTexture           = this.rightItemError           ? TEXT_FIELD_LONG_TEXTURE  : TEXT_FIELD_LONG_ERROR_TEXTURE;
-        Identifier leftConditionTexture       = this.leftConditionError       ? TEXT_FIELD_SHORT_TEXTURE : TEXT_FIELD_SHORT_ERROR_TEXTURE;
-        Identifier left2ConditionTexture      = this.left2ConditionError      ? TEXT_FIELD_SHORT_TEXTURE : TEXT_FIELD_SHORT_ERROR_TEXTURE;
-        Identifier rightConditionTexture      = this.rightConditionError      ? TEXT_FIELD_SHORT_TEXTURE : TEXT_FIELD_SHORT_ERROR_TEXTURE;
-        Identifier leftConditionValueTexture  = this.leftConditionValueError  ? TEXT_FIELD_SHORT_TEXTURE : TEXT_FIELD_SHORT_ERROR_TEXTURE;
-        Identifier left2ConditionValueTexture = this.left2ConditionValueError ? TEXT_FIELD_SHORT_TEXTURE : TEXT_FIELD_SHORT_ERROR_TEXTURE;
-        Identifier rightConditionValueTexture = this.rightConditionValueError ? TEXT_FIELD_SHORT_TEXTURE : TEXT_FIELD_SHORT_ERROR_TEXTURE;
+        Identifier leftItemTexture            = this.leftItemError                                                                 ? TEXT_FIELD_LONG_ERROR_TEXTURE  : TEXT_FIELD_LONG_TEXTURE;
+        Identifier left2ItemTexture           = this.left2ItemError           || this.left2ItemField.getText().isEmpty()           ? TEXT_FIELD_LONG_ERROR_TEXTURE  : TEXT_FIELD_LONG_TEXTURE;
+        Identifier rightItemTexture           = this.rightItemError                                                                ? TEXT_FIELD_LONG_ERROR_TEXTURE  : TEXT_FIELD_LONG_TEXTURE;
+        Identifier leftConditionTexture       = this.leftConditionError                                                            ? TEXT_FIELD_SHORT_ERROR_TEXTURE : TEXT_FIELD_SHORT_TEXTURE;
+        Identifier left2ConditionTexture      = this.left2ConditionError      || this.left2ConditionField.getText().isEmpty()      ? TEXT_FIELD_SHORT_ERROR_TEXTURE : TEXT_FIELD_SHORT_TEXTURE;
+        Identifier rightConditionTexture      = this.rightConditionError                                                           ? TEXT_FIELD_SHORT_ERROR_TEXTURE : TEXT_FIELD_SHORT_TEXTURE;
+        Identifier leftConditionValueTexture  = this.leftConditionValueError                                                       ? TEXT_FIELD_SHORT_ERROR_TEXTURE : TEXT_FIELD_SHORT_TEXTURE;
+        Identifier left2ConditionValueTexture = this.left2ConditionValueError || this.left2ConditionValueField.getText().isEmpty() ? TEXT_FIELD_SHORT_ERROR_TEXTURE : TEXT_FIELD_SHORT_TEXTURE;
+        Identifier rightConditionValueTexture = this.rightConditionValueError                                                      ? TEXT_FIELD_SHORT_ERROR_TEXTURE : TEXT_FIELD_SHORT_TEXTURE;
 
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, leftItemTexture,            x1, y1, 112, 16);
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, left2ItemTexture,           x1, y2, 112, 16);
@@ -173,82 +189,25 @@ public class VillagerTradeAddScreen extends Screen {
     }
 
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
-        // context.drawCenteredTextWithShadow(this.textRenderer, TITLE, 62, 10, 0x1F1F20);
-        context.drawText(this.textRenderer, this.title, 49 + WIDTH / 2 - this.textRenderer.getWidth(this.title) / 2, 6, -12566464, false);
+        int i = (this.width - WIDTH) / 2;
+        int j = (this.height - HEIGHT) / 2;
+        context.drawText(this.textRenderer, this.title, i + WIDTH / 2 - this.textRenderer.getWidth(this.title) / 2, j+6, -12566464, false);
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         this.drawBackground(context, delta, mouseX, mouseY);
         super.render(context, mouseX, mouseY, delta);
+
+        for (Slot slot : this.slots) {
+            slot.render(context, this.textRenderer, mouseX, mouseY);
+        }
+
         this.drawForeground(context, mouseX, mouseY);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        this.leftItemField.setFocused(false);
-        this.left2ItemField.setFocused(false);
-        this.rightItemField.setFocused(false);
-        this.leftConditionField.setFocused(false);
-        this.left2ConditionField.setFocused(false);
-        this.rightConditionField.setFocused(false);
-        this.leftConditionValueField.setFocused(false);
-        this.left2ConditionValueField.setFocused(false);
-        this.rightConditionValueField.setFocused(false);
-
-        return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
     public void tick() {
-        if (!isValidItem(this.leftItemField.getText())) {
-            VillagerTradeAddScreen.this.leftItemError = true;
-            this.confirmButton.active = false;
-            return;
-        }
-        if (!this.left2ItemField.getText().isEmpty() && !isValidItem(this.left2ItemField.getText())) {
-            VillagerTradeAddScreen.this.left2ItemError = true;
-            this.confirmButton.active = false;
-            return;
-        }
-        if (!isValidItem(this.rightItemField.getText())) {
-            VillagerTradeAddScreen.this.rightItemError = true;
-            this.confirmButton.active = false;
-            return;
-        }
-
-        if (!conditionValues.contains(this.leftConditionField.getText())) {
-            VillagerTradeAddScreen.this.leftConditionError = true;
-            this.confirmButton.active = false;
-            return;
-        }
-        if (!this.left2ConditionField.getText().isEmpty() && !conditionValues.contains(this.left2ConditionField.getText())) {
-            VillagerTradeAddScreen.this.left2ConditionError = true;
-            this.confirmButton.active = false;
-            return;
-        }
-        if (!conditionValues.contains(this.rightConditionField.getText())) {
-            VillagerTradeAddScreen.this.rightConditionError = true;
-            this.confirmButton.active = false;
-            return;
-        }
-
-        if (!isValidConditionValue(this.leftConditionValueField.getText())) {
-            VillagerTradeAddScreen.this.leftConditionValueError = true;
-            this.confirmButton.active = false;
-            return;
-        }
-        if (!this.left2ConditionValueField.getText().isEmpty() && !isValidConditionValue(this.left2ConditionValueField.getText())) {
-            VillagerTradeAddScreen.this.left2ConditionValueError = true;
-            this.confirmButton.active = false;
-            return;
-        }
-        if (!isValidConditionValue(this.rightConditionValueField.getText())) {
-            VillagerTradeAddScreen.this.rightConditionValueError = true;
-            this.confirmButton.active = false;
-            return;
-        }
-
         this.leftItemError = false;
         this.left2ItemError = false;
         this.rightItemError = false;
@@ -259,7 +218,94 @@ public class VillagerTradeAddScreen extends Screen {
         this.left2ConditionValueError = false;
         this.rightConditionValueError = false;
 
-        this.confirmButton.active = true;
+        if (!this.leftItemField.isValid())
+            this.leftItemError = true;
+        if (!this.left2ItemField.getText().isEmpty() && !this.left2ItemField.isValid())
+            this.left2ItemError = true;
+        if (!this.rightItemField.isValid())
+            this.rightItemError = true;
+
+        if (!this.leftConditionField.isValid())
+            this.leftConditionError = true;
+        if (!this.left2ConditionField.getText().isEmpty() && !this.left2ConditionField.isValid())
+            this.left2ConditionError = true;
+        if (!this.rightConditionField.isValid())
+            this.rightConditionError = true;
+
+        if (!this.leftConditionValueField.isValid())
+            this.leftConditionValueError = true;
+        if (!this.left2ConditionValueField.getText().isEmpty() && !this.left2ConditionValueField.isValid())
+            this.left2ConditionValueError = true;
+        if (!this.rightConditionValueField.isValid())
+            this.rightConditionValueError = true;
+
+        if (
+            this.leftItemError
+                || this.left2ItemError
+                || this.rightItemError
+                || this.leftConditionError
+                || this.left2ConditionError
+                || this.rightConditionError
+                || this.leftConditionValueError
+                || this.left2ConditionValueError
+                || this.rightConditionValueError
+        ) {
+            this.confirmButton.active = false;
+        } else {
+            this.confirmButton.active = true;
+        }
+
+        this.setSlotStack(0, this.leftItemField.isValid() ? getValidItemStack(this.leftItemField.getText()) : null);
+        this.setSlotStack(1, this.left2ItemField.isValid() ? getValidItemStack(this.left2ItemField.getText()) : null);
+        this.setSlotStack(2, this.rightItemField.isValid() ? getValidItemStack(this.rightItemField.getText()) : null);
+
+        this.setSlotCondition(0, this.leftConditionError || this.leftConditionValueError ? null : new Condition(this.leftConditionField.getText(), Integer.parseInt(this.leftConditionValueField.getText())));
+        this.setSlotCondition(1, (
+            this.left2ConditionError
+                || this.left2ConditionValueError
+                || !this.left2ConditionField.getText().isEmpty()
+                || !this.left2ConditionValueField.getText().isEmpty()
+                || !this.left2ConditionField.isValid()
+                || !this.left2ConditionValueField.isValid()
+        ) ? null : new Condition(this.left2ConditionField.getText(), Integer.parseInt(this.left2ConditionValueField.getText())));
+        this.setSlotCondition(2, this.rightConditionError || this.rightConditionValueError ? null : new Condition(this.rightConditionField.getText(), Integer.parseInt(this.rightConditionValueField.getText())));
+    }
+
+    @Override
+    public void resize(MinecraftClient client, int width, int height) {
+        String leftItemFieldValue = this.leftItemField.getText();
+        String leftConditionFieldValue = this.leftConditionField.getText();
+        String leftConditionValueFieldValue = this.leftConditionValueField.getText();
+        String left2ItemFieldValue = this.left2ItemField.getText();
+        String left2ConditionFieldValue = this.left2ConditionField.getText();
+        String left2ConditionValueFieldValue = this.left2ConditionValueField.getText();
+        String rightItemFieldValue = this.rightItemField.getText();
+        String rightConditionFieldValue = this.rightConditionField.getText();
+        String rightConditionValueFieldValue = this.rightConditionValueField.getText();
+
+        this.init(client, width, height);
+
+        this.leftItemField.setText(leftItemFieldValue);
+        this.leftConditionField.setText(leftConditionFieldValue);
+        this.leftConditionValueField.setText(leftConditionValueFieldValue);
+        this.left2ItemField.setText(left2ItemFieldValue);
+        this.left2ConditionField.setText(left2ConditionFieldValue);
+        this.left2ConditionValueField.setText(left2ConditionValueFieldValue);
+        this.rightItemField.setText(rightItemFieldValue);
+        this.rightConditionField.setText(rightConditionFieldValue);
+        this.rightConditionValueField.setText(rightConditionValueFieldValue);
+    }
+
+    public void setSlotStack(int index, @Nullable ItemStack stack) {
+        if (index >= 0 && index < this.slots.size()) {
+            this.slots.get(index).setStack(stack);
+        }
+    }
+
+    public void setSlotCondition(int index, @Nullable Condition condition) {
+        if (index >= 0 && index < this.slots.size()) {
+            this.slots.get(index).setCondition(condition);
+        }
     }
 
     @Override
@@ -280,6 +326,23 @@ public class VillagerTradeAddScreen extends Screen {
             return item != Items.AIR;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    private static @Nullable ItemStack getValidItemStack(String idString) {
+        idString = idString.contains(":") ? idString : "minecraft:" + idString;
+        if (idString.equals("minecraft:air")) {
+            return null;
+        }
+        try {
+            Identifier id = Identifier.of(idString);
+            Item item = Registries.ITEM.get(id);
+            if (item == Items.AIR) {
+                return null;
+            }
+            return item.getDefaultStack();
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -392,9 +455,49 @@ public class VillagerTradeAddScreen extends Screen {
             AutoVillagerTraderModClient.CONFIG.trades.add(newRule);
             ConfigManager.saveConfig();
 
-            if (VillagerTradeAddScreen.this.client != null && VillagerTradeAddScreen.this.client.player != null) {
-                VillagerTradeAddScreen.this.close();
+            VillagerTradeAddScreen.this.close();
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    static class ColoredTextFieldWidget extends TextFieldWidget {
+        private int focusedColor = -2039584;
+        private int unfocusedColor = -9408400;
+        private final Function<String, Boolean> isValidFunc;
+
+        public ColoredTextFieldWidget(
+            TextRenderer textRenderer,
+            int x,
+            int y,
+            int width,
+            int height,
+            Text text,
+            Function<String, Boolean> isValidFunc
+        ) {
+            super(textRenderer, x, y, width, height, text);
+            this.isValidFunc = isValidFunc;
+        }
+
+        public boolean isValid() {
+            return !this.getText().isEmpty() && this.isValidFunc.apply(this.getText());
+        }
+
+        public void setFocusedColor(int color) {
+            this.focusedColor = color;
+        }
+
+        public void setUnfocusedColor(int color) {
+            this.unfocusedColor = color;
+        }
+
+        @Override
+        public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+            if (this.isValid()) {
+                this.setEditableColor(focusedColor);
+            } else {
+                this.setEditableColor(unfocusedColor);
             }
+            super.renderWidget(context, mouseX, mouseY, delta);
         }
     }
 }
