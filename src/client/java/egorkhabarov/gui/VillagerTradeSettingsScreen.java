@@ -68,16 +68,20 @@ public class VillagerTradeSettingsScreen extends Screen {
             k += 20;
         }
 
-        this.addDrawableChild(ButtonWidget.builder(Text.literal("✎"), b -> onEdit())
-            .dimensions(i + 150, j + 100, 20, 20)
+        this.addDrawableChild(ButtonWidget.builder(Text.translatable("avt_menu.button.toggle"), b -> toggleTrade())
+            .dimensions(i + 113-5, j + 89, 70+5, 20)
             .build());
 
-        this.addDrawableChild(ButtonWidget.builder(Text.literal("+"), b -> onAdd())
-            .dimensions(i + 175, j + 100, 20, 20)
+        this.addDrawableChild(ButtonWidget.builder(Text.translatable("avt_menu.button.add"), b -> onAdd())
+            .dimensions(i + 193, j + 89, 70+5, 20)
             .build());
 
-        this.addDrawableChild(ButtonWidget.builder(Text.literal("🗑"), b -> onDelete())
-            .dimensions(i + 200, j + 100, 20, 20)
+        this.addDrawableChild(ButtonWidget.builder(Text.translatable("avt_menu.button.remove"), b -> onDelete())
+            .dimensions(i + 113-5, j + 119, 70+5, 20)
+            .build());
+
+        this.addDrawableChild(ButtonWidget.builder(Text.translatable("avt_menu.button.update"), b -> onUpdate())
+            .dimensions(i + 193, j + 119, 70+5, 20)
             .build());
 
         this.slots.clear();
@@ -86,7 +90,7 @@ public class VillagerTradeSettingsScreen extends Screen {
         this.slots.add(new Slot(i + 220, j + 37, null));
     }
 
-    private void onEdit() {
+    private void toggleTrade() {
         if (selectedIndex >= 0 && selectedIndex < trades.size()) {
             TradeRule rule = this.trades.get(selectedIndex);
             rule.enabled = !rule.enabled;
@@ -100,6 +104,13 @@ public class VillagerTradeSettingsScreen extends Screen {
 
         if (this.client != null) {
             this.client.setScreen(new VillagerTradeEditorScreen(this));
+        }
+    }
+
+    private void onUpdate() {
+        if (this.client != null && selectedIndex >= 0 && selectedIndex < trades.size()) {
+            TradeRule rule = this.trades.get(selectedIndex);
+            this.client.setScreen(new VillagerTradeEditorScreen(this, selectedIndex, rule));
         }
     }
 
@@ -318,14 +329,10 @@ public class VillagerTradeSettingsScreen extends Screen {
                     ItemStack itemStack = VillagerTradeSettingsScreen.this.trades.get(this.index + VillagerTradeSettingsScreen.this.indexStartOffset).getSecondBuyItem();
                     if (!itemStack.isEmpty()) {
                         context.drawItemTooltip(VillagerTradeSettingsScreen.this.textRenderer, itemStack, x, y);
-                    } else {
-                        context.drawTooltip(VillagerTradeSettingsScreen.this.textRenderer, Text.translatable("avt_menu.rule_tooltip"), x, y);
                     }
                 } else if (x > this.getX() + 65) {
                     ItemStack itemStack = VillagerTradeSettingsScreen.this.trades.get(this.index + VillagerTradeSettingsScreen.this.indexStartOffset).getSellItem();
                     context.drawItemTooltip(VillagerTradeSettingsScreen.this.textRenderer, itemStack, x, y);
-                } else {
-                    context.drawTooltip(VillagerTradeSettingsScreen.this.textRenderer, Text.translatable("avt_menu.rule_tooltip"), x, y);
                 }
             }
         }
