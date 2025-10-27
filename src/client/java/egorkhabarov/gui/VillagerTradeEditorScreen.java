@@ -1,6 +1,8 @@
 package egorkhabarov.gui;
 
+import egorkhabarov.config.Condition;
 import egorkhabarov.config.ConfigManager;
+import egorkhabarov.gui.slot.Slot;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gl.RenderPipelines;
@@ -15,6 +17,7 @@ import net.minecraft.util.math.MathHelper;
 import egorkhabarov.AutoVillagerTraderModClient;
 import egorkhabarov.config.TradeRule;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
@@ -35,6 +38,7 @@ public class VillagerTradeEditorScreen extends Screen {
     private static final int HEIGHT = 166;
     private final Screen parent;
     private final List<TradeRule> trades;
+    private final List<Slot> slots = new ArrayList<>();
 
     public VillagerTradeEditorScreen(Screen parent) {
         super(Text.translatable("avt_menu.trades"));
@@ -56,11 +60,10 @@ public class VillagerTradeEditorScreen extends Screen {
         int k = j + 16 + 2;
 
         for(int l = 0; l < 7; ++l) {
-            this.offers[l] = (WidgetButtonPage) this.addDrawableChild(new WidgetButtonPage(i + 5, k, l, (button) -> {
+            this.offers[l] = this.addDrawableChild(new WidgetButtonPage(i + 5, k, l, (button) -> {
                 if (button instanceof WidgetButtonPage) {
                     this.selectedIndex = ((WidgetButtonPage)button).getIndex() + this.indexStartOffset;
                 }
-
             }));
             k += 20;
         }
@@ -76,6 +79,11 @@ public class VillagerTradeEditorScreen extends Screen {
         this.addDrawableChild(ButtonWidget.builder(Text.literal("🗑"), b -> onDelete())
             .dimensions(i + 200, j + 100, 20, 20)
             .build());
+
+        this.slots.clear();
+        this.slots.add(new Slot(i + 136, j + 37, null));
+        this.slots.add(new Slot(i + 162, j + 37, null));
+        this.slots.add(new Slot(i + 220, j + 37, null));
     }
 
     private void onEdit() {
@@ -88,7 +96,6 @@ public class VillagerTradeEditorScreen extends Screen {
 
     private void onAdd() {
         this.indexStartOffset = 0;
-        reloadTrades();
         this.selectedIndex = 0;
 
         if (this.client != null) {
@@ -101,13 +108,8 @@ public class VillagerTradeEditorScreen extends Screen {
             this.trades.remove(selectedIndex);
             ConfigManager.saveConfig();
             this.indexStartOffset = 0;
-            reloadTrades();
             this.selectedIndex = 0;
         }
-    }
-
-    private void reloadTrades() {
-        this.selectedIndex = -1;
     }
 
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
@@ -115,7 +117,8 @@ public class VillagerTradeEditorScreen extends Screen {
         int j = (this.height - HEIGHT) / 2;
         context.drawText(this.textRenderer, this.title, i+49 + WIDTH / 2 - this.textRenderer.getWidth(this.title) / 2, j+6, -12566464, false);
 
-        context.drawText(this.textRenderer, Text.of("Инвентарь"), i+107, j+HEIGHT-94, -12566464, false);
+        TradeRule tradeRule = this.trades.get(this.selectedIndex);
+        context.drawText(this.textRenderer, Text.of(tradeRule.getRuleId()), i+107, j+HEIGHT-94, -12566464, false);
         int l = this.textRenderer.getWidth(TRADES_TEXT);
         context.drawText(this.textRenderer, TRADES_TEXT, i+5 - l / 2 + 48, j+6, -12566464, false);
     }
@@ -132,8 +135,9 @@ public class VillagerTradeEditorScreen extends Screen {
 
             TradeRule tradeRule = this.trades.get(k);
             if (!tradeRule.enabled) {
-                context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, OUT_OF_STOCK_TEXTURE, WIDTH + 83 + 99, HEIGHT + 35, 28, 21);
+                context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, OUT_OF_STOCK_TEXTURE, i + 83 + 99, j + 35, 28, 21);
             }
+            this.setSlotItems(tradeRule);
         }
     }
 
@@ -172,15 +176,17 @@ public class VillagerTradeEditorScreen extends Screen {
                     ItemStack itemStack3 = tradeRule.getSecondBuyItem();
                     ItemStack itemStack4 = tradeRule.getSellItem();
                     int n = k + 2;
-                    this.renderFirstBuyItem(context, itemStack2, itemStack, l, n);
-                    if (!itemStack3.isEmpty()) {
+                    this.renderFirstBuyItem(context, itemStack2, itemStack, tradeRule, l, n);
+                    if (!itemStack3.isEmpty() && tradeRule.left2 != null && tradeRule.left2.count != null) {
                         context.drawItemWithoutEntity(itemStack3, i + 5 + 35, n);
-                        context.drawStackOverlay(this.textRenderer, itemStack3, i + 5 + 35, n);
+                        // context.drawStackOverlay(this.textRenderer, itemStack3, i + 5 + 35, n);
+                        Slot.renderItem(context, this.textRenderer, itemStack3, tradeRule.left2.count, i + 5 + 35, n);
                     }
 
-                    this.renderArrow(context, tradeRule, i, n);
+                    this.renderArrow(context, tradeRule.enabled, i, n);
                     context.drawItemWithoutEntity(itemStack4, i + 5 + 68, n);
-                    context.drawStackOverlay(this.textRenderer, itemStack4, i + 5 + 68, n);
+                    // context.drawStackOverlay(this.textRenderer, itemStack4, i + 5 + 68, n);
+                    Slot.renderItem(context, this.textRenderer, itemStack4, tradeRule.right.count, i + 5 + 68, n);
                     k += 20;
                     ++m;
                 } else {
@@ -197,26 +203,45 @@ public class VillagerTradeEditorScreen extends Screen {
             }
         }
 
+        for (Slot slot : this.slots) {
+            slot.render(context, this.textRenderer, mouseX, mouseY);
+        }
+
         this.drawForeground(context, mouseX, mouseY);
     }
 
-    private void renderArrow(DrawContext context, TradeRule tradeRule, int x, int y) {
-        if (!tradeRule.enabled) {
-            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TRADE_ARROW_OUT_OF_STOCK_TEXTURE, x + 5 + 35 + 20, y + 3, 10, 9);
-        } else {
-            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TRADE_ARROW_TEXTURE, x + 5 + 35 + 20, y + 3, 10, 9);
+    public void setSlotItem(int index, ItemStack stack, Condition condition) {
+        if (index >= 0 && index < this.slots.size()) {
+            this.slots.get(index).setStack(stack);
+            this.slots.get(index).setCondition(condition);
         }
     }
 
-    private void renderFirstBuyItem(DrawContext context, ItemStack adjustedFirstBuyItem, ItemStack originalFirstBuyItem, int x, int y) {
-        context.drawItemWithoutEntity(adjustedFirstBuyItem, x, y);
-        if (originalFirstBuyItem.getCount() == adjustedFirstBuyItem.getCount()) {
-            context.drawStackOverlay(this.textRenderer, adjustedFirstBuyItem, x, y);
+    public void setSlotItems(TradeRule rule) {
+        this.setSlotItem(0, rule.getFirstBuyItem(), rule.left.count);
+        this.setSlotItem(1, rule.getSecondBuyItem(), rule.left2 != null ? rule.left2.count : null);
+        this.setSlotItem(2, rule.getSellItem(), rule.right.count);
+    }
+
+    private void renderArrow(DrawContext context, boolean enabled, int x, int y) {
+        if (enabled) {
+            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TRADE_ARROW_TEXTURE, x + 5 + 35 + 20, y + 3, 10, 9);
         } else {
-            context.drawStackOverlay(this.textRenderer, originalFirstBuyItem, x, y, originalFirstBuyItem.getCount() == 1 ? "1" : null);
-            context.drawStackOverlay(this.textRenderer, adjustedFirstBuyItem, x + 14, y, adjustedFirstBuyItem.getCount() == 1 ? "1" : null);
-            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, DISCOUNT_STRIKETHROUGH_TEXTURE, x + 7, y + 12, 9, 2);
+            context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, TRADE_ARROW_OUT_OF_STOCK_TEXTURE, x + 5 + 35 + 20, y + 3, 10, 9);
         }
+    }
+
+    private void renderFirstBuyItem(DrawContext context, ItemStack adjustedFirstBuyItem, ItemStack originalFirstBuyItem, TradeRule tradeRule, int x, int y) {
+        context.drawItemWithoutEntity(adjustedFirstBuyItem, x, y);
+        Slot.renderItem(context, this.textRenderer, adjustedFirstBuyItem, tradeRule.left.count, x, y);
+
+        // if (originalFirstBuyItem.getCount() == adjustedFirstBuyItem.getCount()) {
+        //     context.drawStackOverlay(this.textRenderer, adjustedFirstBuyItem, x, y);
+        // } else {
+        //     context.drawStackOverlay(this.textRenderer, originalFirstBuyItem, x, y, originalFirstBuyItem.getCount() == 1 ? "1" : null);
+        //     context.drawStackOverlay(this.textRenderer, adjustedFirstBuyItem, x + 14, y, adjustedFirstBuyItem.getCount() == 1 ? "1" : null);
+        //     context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, DISCOUNT_STRIKETHROUGH_TEXTURE, x + 7, y + 12, 9, 2);
+        // }
     }
 
     private boolean canScroll(int listSize) {
@@ -293,10 +318,14 @@ public class VillagerTradeEditorScreen extends Screen {
                     ItemStack itemStack = VillagerTradeEditorScreen.this.trades.get(this.index + VillagerTradeEditorScreen.this.indexStartOffset).getSecondBuyItem();
                     if (!itemStack.isEmpty()) {
                         context.drawItemTooltip(VillagerTradeEditorScreen.this.textRenderer, itemStack, x, y);
+                    } else {
+                        context.drawTooltip(VillagerTradeEditorScreen.this.textRenderer, Text.translatable("avt_menu.rule_tooltip"), x, y);
                     }
                 } else if (x > this.getX() + 65) {
                     ItemStack itemStack = VillagerTradeEditorScreen.this.trades.get(this.index + VillagerTradeEditorScreen.this.indexStartOffset).getSellItem();
                     context.drawItemTooltip(VillagerTradeEditorScreen.this.textRenderer, itemStack, x, y);
+                } else {
+                    context.drawTooltip(VillagerTradeEditorScreen.this.textRenderer, Text.translatable("avt_menu.rule_tooltip"), x, y);
                 }
             }
         }
