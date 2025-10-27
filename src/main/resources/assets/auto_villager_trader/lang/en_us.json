@@ -12,5 +12,6 @@
     "avt_menu.title": "Trades Settings",
     "avt_menu.add_trade.title": "Add Trade",
     "avt_menu.trades": "Trades",
-    "avt_menu.deprecated": "Villagers restock up to two times per day."
+    "avt_menu.deprecated": "Villagers restock up to two times per day.",
+    "avt_menu.rule_tooltip": "Click to toggle this rule"
 }
