@@ -475,11 +475,7 @@ public class VillagerTradeEditorScreen extends Screen {
         }
 
         public void onPress() {
-            // VillagerTradeAddScreen.this.client.getNetworkHandler().sendPacket(new UpdateBeaconC2SPacket(Optional.ofNullable(VillagerTradeAddScreen.this.primaryEffect), Optional.ofNullable(VillagerTradeAddScreen.this.secondaryEffect)));
-            // TODO добавление данных
-
             TradeRule newRule = new TradeRule(
-                List.of("minecraft:farmer"),
                 new TradeItemSide(
                     getValidItemString(VillagerTradeEditorScreen.this.leftItemField.getText()),
                     new Condition(

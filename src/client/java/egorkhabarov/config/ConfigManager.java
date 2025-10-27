@@ -72,11 +72,10 @@ public class ConfigManager {
     "scan_radius": 0.5,
     "villager_cache_ttl": 5000,
     "need_see": true,
+    "professions": ["minecraft:farmer"],
     "trades": [
         {
             "enabled": true,
-            "cooldown_ms": 500,
-            "professions": ["minecraft:farmer"],
             "left": {
                 "item": "minecraft:melon",
                 "count": {
@@ -94,8 +93,6 @@ public class ConfigManager {
         },
         {
             "enabled": true,
-            "cooldown_ms": 500,
-            "professions": ["minecraft:farmer"],
             "left": {
                 "item": "minecraft:pumpkin",
                 "count": {

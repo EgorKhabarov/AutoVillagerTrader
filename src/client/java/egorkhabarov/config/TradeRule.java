@@ -6,23 +6,17 @@ import net.minecraft.util.Identifier;
 import net.minecraft.village.TradeOffer;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public class TradeRule {
     public boolean enabled = true;
-    public long cooldown_ms = 0;
-    public List<String> professions;
     public TradeItemSide left;
-    public @Nullable TradeItemSide left2;  // Optional
+    public @Nullable TradeItemSide left2;
     public TradeItemSide right;
 
     public TradeRule(
-        List<String> professions,
         TradeItemSide left,
         @Nullable TradeItemSide left2,
         TradeItemSide right
     ) {
-        this.professions = professions;
         this.left = left;
         this.left2 = left2;
         this.right = right;

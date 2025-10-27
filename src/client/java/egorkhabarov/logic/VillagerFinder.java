@@ -10,7 +10,6 @@ import egorkhabarov.config.ConfigData;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.util.Hand;
 
-import java.util.HashSet;
 import java.util.List;
 
 public class VillagerFinder {
@@ -30,7 +29,6 @@ public class VillagerFinder {
         ) {
             return;
         }
-        HashSet<String> professions = config.getProfessions();
         List<VillagerEntity> villagers = client.world.getEntitiesByClass(
             VillagerEntity.class,
             player.getBoundingBox().expand(config.scan_radius),
@@ -38,7 +36,7 @@ public class VillagerFinder {
                 if (config.need_see && !player.canSee(v)) {
                     return false;
                 }
-                return professions.contains(v.getVillagerData().profession().getIdAsString());
+                return config.professions.contains(v.getVillagerData().profession().getIdAsString());
             }
         );
 
