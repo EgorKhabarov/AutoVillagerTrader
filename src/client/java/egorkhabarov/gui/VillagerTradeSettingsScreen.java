@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class VillagerTradeEditorScreen extends Screen {
+public class VillagerTradeSettingsScreen extends Screen {
     private static final Identifier OUT_OF_STOCK_TEXTURE = Identifier.ofVanilla("container/villager/out_of_stock");
     private static final Identifier SCROLLER_TEXTURE = Identifier.ofVanilla("container/villager/scroller");
     private static final Identifier SCROLLER_DISABLED_TEXTURE = Identifier.ofVanilla("container/villager/scroller_disabled");
@@ -40,13 +40,13 @@ public class VillagerTradeEditorScreen extends Screen {
     private final List<TradeRule> trades;
     private final List<Slot> slots = new ArrayList<>();
 
-    public VillagerTradeEditorScreen(Screen parent) {
+    public VillagerTradeSettingsScreen(Screen parent) {
         super(Text.translatable("avt_menu.trades"));
         this.parent = parent;
         this.trades = AutoVillagerTraderModClient.CONFIG.trades;
     }
 
-    public VillagerTradeEditorScreen() {
+    public VillagerTradeSettingsScreen() {
         super(Text.translatable("avt_menu.trades"));
         this.parent = null;
         this.trades = AutoVillagerTraderModClient.CONFIG.trades;
@@ -310,22 +310,22 @@ public class VillagerTradeEditorScreen extends Screen {
         }
 
         public void renderTooltip(DrawContext context, int x, int y) {
-            if (this.hovered && VillagerTradeEditorScreen.this.trades.size() > this.index + VillagerTradeEditorScreen.this.indexStartOffset) {
+            if (this.hovered && VillagerTradeSettingsScreen.this.trades.size() > this.index + VillagerTradeSettingsScreen.this.indexStartOffset) {
                 if (x < this.getX() + 20) {
-                    ItemStack itemStack = VillagerTradeEditorScreen.this.trades.get(this.index + VillagerTradeEditorScreen.this.indexStartOffset).getFirstBuyItem();
-                    context.drawItemTooltip(VillagerTradeEditorScreen.this.textRenderer, itemStack, x, y);
+                    ItemStack itemStack = VillagerTradeSettingsScreen.this.trades.get(this.index + VillagerTradeSettingsScreen.this.indexStartOffset).getFirstBuyItem();
+                    context.drawItemTooltip(VillagerTradeSettingsScreen.this.textRenderer, itemStack, x, y);
                 } else if (x < this.getX() + 50 && x > this.getX() + 30) {
-                    ItemStack itemStack = VillagerTradeEditorScreen.this.trades.get(this.index + VillagerTradeEditorScreen.this.indexStartOffset).getSecondBuyItem();
+                    ItemStack itemStack = VillagerTradeSettingsScreen.this.trades.get(this.index + VillagerTradeSettingsScreen.this.indexStartOffset).getSecondBuyItem();
                     if (!itemStack.isEmpty()) {
-                        context.drawItemTooltip(VillagerTradeEditorScreen.this.textRenderer, itemStack, x, y);
+                        context.drawItemTooltip(VillagerTradeSettingsScreen.this.textRenderer, itemStack, x, y);
                     } else {
-                        context.drawTooltip(VillagerTradeEditorScreen.this.textRenderer, Text.translatable("avt_menu.rule_tooltip"), x, y);
+                        context.drawTooltip(VillagerTradeSettingsScreen.this.textRenderer, Text.translatable("avt_menu.rule_tooltip"), x, y);
                     }
                 } else if (x > this.getX() + 65) {
-                    ItemStack itemStack = VillagerTradeEditorScreen.this.trades.get(this.index + VillagerTradeEditorScreen.this.indexStartOffset).getSellItem();
-                    context.drawItemTooltip(VillagerTradeEditorScreen.this.textRenderer, itemStack, x, y);
+                    ItemStack itemStack = VillagerTradeSettingsScreen.this.trades.get(this.index + VillagerTradeSettingsScreen.this.indexStartOffset).getSellItem();
+                    context.drawItemTooltip(VillagerTradeSettingsScreen.this.textRenderer, itemStack, x, y);
                 } else {
-                    context.drawTooltip(VillagerTradeEditorScreen.this.textRenderer, Text.translatable("avt_menu.rule_tooltip"), x, y);
+                    context.drawTooltip(VillagerTradeSettingsScreen.this.textRenderer, Text.translatable("avt_menu.rule_tooltip"), x, y);
                 }
             }
         }
