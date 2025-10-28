@@ -12,7 +12,7 @@
         "issues": "https://github.com/EgorKhabarov/AutoVillagerTrader/issues",
         "sources": "https://github.com/EgorKhabarov/AutoVillagerTrader"
 	},
-	"license": "MIT",
+	"license": "GPL-3.0",
 	"icon": "assets/auto_villager_trader/icon.png",
 	"environment": "client",
 	"entrypoints": {
