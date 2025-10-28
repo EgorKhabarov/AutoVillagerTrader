@@ -26,7 +26,7 @@ public class TradeRule {
         if (left == null || !left.match(offer.getDisplayedFirstBuyItem())) {
             return false;
         }
-        if (left2 == null || !left2.match(offer.getDisplayedSecondBuyItem())) {
+        if (left2 != null && !left2.match(offer.getDisplayedSecondBuyItem())) {
             return false;
         }
         return right != null && right.match(offer.getSellItem());
