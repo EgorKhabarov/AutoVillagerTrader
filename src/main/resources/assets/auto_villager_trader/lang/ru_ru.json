@@ -1,10 +1,19 @@
 {
     "avt_menu.title": "Настройки торгов",
     "avt_menu.trades": "Торги",
+    "avt_menu.settings": "Настройки",
+    "avt_menu.villagers": "Жители",
+    "avt_menu.select_professions": "Выберите профессии для торговли",
     "avt_menu.add_trade.title": "Добавить торг",
     "avt_menu.update_trade.title": "Обновить торг",
     "avt_menu.button.toggle": "Переключить",
     "avt_menu.button.add": "Добавить",
     "avt_menu.button.remove": "Удалить",
-    "avt_menu.button.update": "Изменить"
+    "avt_menu.button.update": "Изменить",
+    "avt_menu.button.enabled": "Включён",
+    "avt_menu.button.auto_finder_enabled": "Aвтопоиск",
+    "avt_menu.button.scan_interval_ms": "Интервал поиска",
+    "avt_menu.button.scan_radius": "Радиус поиска",
+    "avt_menu.button.villager_cache_ttl": "Villager Cache TTL",
+    "avt_menu.button.need_see": "Нужно видеть жителя"
 }

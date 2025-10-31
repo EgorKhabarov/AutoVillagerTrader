@@ -10,12 +10,21 @@
     "message.autotrader.auto_finder_enabled": "AutoFinder enabled",
     "message.autotrader.auto_finder_disabled": "AutoFinder disabled",
     "avt_menu.title": "Trades Settings",
+    "avt_menu.settings": "Settings",
     "avt_menu.add_trade.title": "Add Trade",
     "avt_menu.update_trade.title": "Add Trade",
     "avt_menu.trades": "Trades",
+    "avt_menu.villagers": "Villagers",
+    "avt_menu.select_professions": "Select the professions to trade",
     "avt_menu.deprecated": "Villagers restock up to two times per day.",
     "avt_menu.button.toggle": "Toggle",
     "avt_menu.button.add": "Add",
     "avt_menu.button.remove": "Remove",
-    "avt_menu.button.update": "Update"
+    "avt_menu.button.update": "Update",
+    "avt_menu.button.enabled": "Enabled",
+    "avt_menu.button.auto_finder_enabled": "AutoFinder enabled",
+    "avt_menu.button.scan_interval_ms": "Scan Interval",
+    "avt_menu.button.scan_radius": "Scan Radius",
+    "avt_menu.button.villager_cache_ttl": "Villager Cache TTL",
+    "avt_menu.button.need_see": "Need See"
 }
