@@ -10,8 +10,8 @@ import org.jetbrains.annotations.Nullable;
 public class Slot {
     private final int x;
     private final int y;
-    private final int width = 18;
-    private final int height = 18;
+    public final int width = 18;
+    public final int height = 18;
     private @Nullable ItemStack stack;
     private @Nullable Condition condition;
 

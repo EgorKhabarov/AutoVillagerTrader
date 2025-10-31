@@ -27,7 +27,7 @@ public class VillagerTradeSettingsScreen extends TabScreen {
     private static final Identifier SCROLLER_DISABLED_TEXTURE = Identifier.ofVanilla("container/villager/scroller_disabled");
     private static final Identifier TRADE_ARROW_OUT_OF_STOCK_TEXTURE = Identifier.ofVanilla("container/villager/trade_arrow_out_of_stock");
     private static final Identifier TRADE_ARROW_TEXTURE = Identifier.ofVanilla("container/villager/trade_arrow");
-    private static final Identifier DISCOUNT_STRIKETHROUGH_TEXTURE = Identifier.ofVanilla("container/villager/discount_strikethrough");
+    // private static final Identifier DISCOUNT_STRIKETHROUGH_TEXTURE = Identifier.ofVanilla("container/villager/discount_strikethrough");
     private static final Identifier TEXTURE = Identifier.of("auto_villager_trader", "textures/gui/villager_trade_editor.png");
     private static final Text TRADES_TEXT = Text.translatable("merchant.trades");
     private int selectedIndex;
@@ -39,11 +39,6 @@ public class VillagerTradeSettingsScreen extends TabScreen {
 
     public VillagerTradeSettingsScreen(Screen parent) {
         super(Text.translatable("avt_menu.trades"), parent);
-        this.trades = AutoVillagerTraderModClient.CONFIG.trades;
-    }
-
-    public VillagerTradeSettingsScreen() {
-        super(Text.translatable("avt_menu.trades"), null);
         this.trades = AutoVillagerTraderModClient.CONFIG.trades;
     }
 
@@ -118,7 +113,7 @@ public class VillagerTradeSettingsScreen extends TabScreen {
         }
     }
 
-    protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
+    protected void drawForeground(DrawContext context) {
         int i = (this.width - this.WIDTH) / 2;
         int j = (this.height - this.HEIGHT) / 2;
         context.drawText(this.textRenderer, this.title, i+49 + this.WIDTH / 2 - this.textRenderer.getWidth(this.title) / 2, j+6, -12566464, false);
@@ -129,7 +124,7 @@ public class VillagerTradeSettingsScreen extends TabScreen {
         context.drawText(this.textRenderer, TRADES_TEXT, i+5 - l / 2 + 48, j+6, -12566464, false);
     }
 
-    protected void drawBackground(DrawContext context, float deltaTicks, int mouseX, int mouseY) {
+    protected void drawBackground(DrawContext context) {
         int i = (this.width - this.WIDTH) / 2;
         int j = (this.height - this.HEIGHT) / 2;
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0.0F, 0.0F, this.WIDTH, this.HEIGHT, 512, 256);
@@ -164,7 +159,7 @@ public class VillagerTradeSettingsScreen extends TabScreen {
     }
 
     public void render(DrawContext context, int mouseX, int mouseY, float deltaTicks) {
-        this.drawBackground(context, deltaTicks, mouseX, mouseY);
+        this.drawBackground(context);
         super.render(context, mouseX, mouseY, deltaTicks);
 
         if (!this.trades.isEmpty()) {
@@ -177,12 +172,12 @@ public class VillagerTradeSettingsScreen extends TabScreen {
 
             for(TradeRule tradeRule : this.trades) {
                 if (!this.canScroll(this.trades.size()) || m >= this.indexStartOffset && m < 7 + this.indexStartOffset) {
-                    ItemStack itemStack = tradeRule.getFirstBuyItem();
+                    // ItemStack itemStack = tradeRule.getFirstBuyItem();
                     ItemStack itemStack2 = tradeRule.getFirstBuyItem();
                     ItemStack itemStack3 = tradeRule.getSecondBuyItem();
                     ItemStack itemStack4 = tradeRule.getSellItem();
                     int n = k + 2;
-                    this.renderFirstBuyItem(context, itemStack2, itemStack, tradeRule, l, n);
+                    this.renderFirstBuyItem(context, itemStack2, tradeRule, l, n);
                     if (!itemStack3.isEmpty() && tradeRule.left2 != null && tradeRule.left2.count != null) {
                         context.drawItemWithoutEntity(itemStack3, i + 5 + 35, n);
                         // context.drawStackOverlay(this.textRenderer, itemStack3, i + 5 + 35, n);
@@ -213,7 +208,7 @@ public class VillagerTradeSettingsScreen extends TabScreen {
             slot.render(context, this.textRenderer, mouseX, mouseY);
         }
 
-        this.drawForeground(context, mouseX, mouseY);
+        this.drawForeground(context);
     }
 
     public void setSlotItem(int index, ItemStack stack, Condition condition) {
@@ -237,7 +232,8 @@ public class VillagerTradeSettingsScreen extends TabScreen {
         }
     }
 
-    private void renderFirstBuyItem(DrawContext context, ItemStack adjustedFirstBuyItem, ItemStack originalFirstBuyItem, TradeRule tradeRule, int x, int y) {
+    private void renderFirstBuyItem(DrawContext context, ItemStack adjustedFirstBuyItem, TradeRule tradeRule, int x, int y) {
+        // , ItemStack originalFirstBuyItem
         context.drawItemWithoutEntity(adjustedFirstBuyItem, x, y);
         Slot.renderItem(context, this.textRenderer, adjustedFirstBuyItem, tradeRule.left.count, x, y);
 

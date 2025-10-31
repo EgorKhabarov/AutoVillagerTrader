@@ -29,14 +29,6 @@ public class ChatUtils {
         client.player.sendMessage(result, false);
     }
 
-    public static void sendErrorMessage(String message) {
-        ChatUtils.sendModMessage(Text.literal(message).formatted(Formatting.RED));
-    }
-
-    public static void sendConfirmationMessage(String message) {
-        ChatUtils.sendModMessage(Text.literal(message).formatted(Formatting.GREEN));
-    }
-
     public static void sendAutoTraderStatusMessage() {
         MutableText message = Text.translatable(
             AutoVillagerTraderModClient.CONFIG.enabled

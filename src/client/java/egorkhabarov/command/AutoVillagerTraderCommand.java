@@ -6,9 +6,7 @@ import egorkhabarov.config.ConfigManager;
 import egorkhabarov.util.ChatUtils;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
 
 public class AutoVillagerTraderCommand {
     public static void register() {

@@ -41,7 +41,7 @@ public class VillagerTradeEditorScreen extends Screen {
 
     static final Identifier BUTTON_TEXTURE = Identifier.ofVanilla("container/beacon/button");
     static final Identifier BUTTON_DISABLED_TEXTURE = Identifier.ofVanilla("container/beacon/button_disabled");
-    static final Identifier BUTTON_SELECTED_TEXTURE = Identifier.ofVanilla("container/beacon/button_selected");
+    // static final Identifier BUTTON_SELECTED_TEXTURE = Identifier.ofVanilla("container/beacon/button_selected");
     static final Identifier BUTTON_HIGHLIGHTED_TEXTURE = Identifier.ofVanilla("container/beacon/button_highlighted");
     static final Identifier CONFIRM_TEXTURE = Identifier.ofVanilla("container/beacon/confirm");
     static final Identifier CANCEL_TEXTURE = Identifier.ofVanilla("container/beacon/cancel");
@@ -51,7 +51,6 @@ public class VillagerTradeEditorScreen extends Screen {
     private static final int HEIGHT = 166;
 
     private VillagerTradeEditorScreen.ConfirmButtonWidget confirmButton;
-    private VillagerTradeEditorScreen.CancelButtonWidget cancelButton;
 
     private ColoredTextFieldWidget leftItemField;
     private ColoredTextFieldWidget leftConditionField;
@@ -120,8 +119,7 @@ public class VillagerTradeEditorScreen extends Screen {
         int width1 = 112, width2 = 24, width3 = 24;
         int height1 = 16, height2 = 16, height3 = 16;
 
-        this.cancelButton = new VillagerTradeEditorScreen.CancelButtonWidget(i + 230, j + 78);
-        this.addDrawableChild(cancelButton);
+        this.addDrawableChild(new VillagerTradeEditorScreen.CancelButtonWidget(i + 230, j + 78));
 
         this.confirmButton = new VillagerTradeEditorScreen.ConfirmButtonWidget(i + 230, j + 110);
         this.addDrawableChild(confirmButton);
@@ -197,7 +195,7 @@ public class VillagerTradeEditorScreen extends Screen {
         }
     }
 
-    protected void drawBackground(DrawContext context, float deltaTicks, int mouseX, int mouseY) {
+    protected void drawBackground(DrawContext context) {
         int i = (this.width - WIDTH) / 2;
         int j = (this.height - HEIGHT) / 2;
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0.0F, 0.0F, WIDTH, HEIGHT, 512, 256);
@@ -226,7 +224,7 @@ public class VillagerTradeEditorScreen extends Screen {
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, rightConditionValueTexture, x3, y3,  24, 16);
     }
 
-    protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
+    protected void drawForeground(DrawContext context) {
         int i = (this.width - WIDTH) / 2;
         int j = (this.height - HEIGHT) / 2;
         context.drawText(this.textRenderer, this.title, i + WIDTH / 2 - this.textRenderer.getWidth(this.title) / 2, j+6, -12566464, false);
@@ -234,14 +232,14 @@ public class VillagerTradeEditorScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.drawBackground(context, delta, mouseX, mouseY);
+        this.drawBackground(context);
         super.render(context, mouseX, mouseY, delta);
 
         for (Slot slot : this.slots) {
             slot.render(context, this.textRenderer, mouseX, mouseY);
         }
 
-        this.drawForeground(context, mouseX, mouseY);
+        this.drawForeground(context);
     }
 
     @Override
@@ -277,7 +275,7 @@ public class VillagerTradeEditorScreen extends Screen {
         if (!this.rightConditionValueField.isValid())
             this.rightConditionValueError = true;
 
-        if (
+        this.confirmButton.active = !(
             this.leftItemError
                 || this.left2ItemError
                 || this.rightItemError
@@ -287,11 +285,7 @@ public class VillagerTradeEditorScreen extends Screen {
                 || this.leftConditionValueError
                 || this.left2ConditionValueError
                 || this.rightConditionValueError
-        ) {
-            this.confirmButton.active = false;
-        } else {
-            this.confirmButton.active = true;
-        }
+        );
 
         this.setSlotStack(0, this.leftItemField.isValid() ? getValidItemStack(this.leftItemField.getText()) : null);
         this.setSlotStack(1, this.left2ItemField.isValid() ? getValidItemStack(this.left2ItemField.getText()) : null);
@@ -401,12 +395,6 @@ public class VillagerTradeEditorScreen extends Screen {
 
     @Environment(EnvType.CLIENT)
     abstract static class BaseButtonWidget extends PressableWidget {
-        private boolean disabled;
-
-        protected BaseButtonWidget(int x, int y) {
-            super(x, y, 22, 22, ScreenTexts.EMPTY);
-        }
-
         protected BaseButtonWidget(int x, int y, Text message) {
             super(x, y, 22, 22, message);
         }
@@ -415,8 +403,6 @@ public class VillagerTradeEditorScreen extends Screen {
             Identifier identifier;
             if (!this.active) {
                 identifier = VillagerTradeEditorScreen.BUTTON_DISABLED_TEXTURE;
-            } else if (this.disabled) {
-                identifier = VillagerTradeEditorScreen.BUTTON_SELECTED_TEXTURE;
             } else if (this.isSelected()) {
                 identifier = VillagerTradeEditorScreen.BUTTON_HIGHLIGHTED_TEXTURE;
             } else {
@@ -428,14 +414,6 @@ public class VillagerTradeEditorScreen extends Screen {
         }
 
         protected abstract void renderExtra(DrawContext context);
-
-        public boolean isDisabled() {
-            return this.disabled;
-        }
-
-        public void setDisabled(boolean disabled) {
-            this.disabled = disabled;
-        }
 
         public void appendClickableNarrations(NarrationMessageBuilder builder) {
             this.appendDefaultNarrations(builder);
