@@ -2,7 +2,7 @@ package egorkhabarov.keybinds;
 
 import egorkhabarov.AutoVillagerTraderModClient;
 import egorkhabarov.config.ConfigManager;
-import egorkhabarov.gui.VillagerTradeSettingsScreen;
+import egorkhabarov.gui.ModSettingsScreen;
 import egorkhabarov.util.ChatUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -47,7 +47,7 @@ public class Keybinds {
 
             boolean openMenuKeyNow = Keybinds.openMenuKey.isPressed();
             if (!openMenuKeyNow && Keybinds.wasOpenMenuKeyPressed) {
-                client.setScreen(new VillagerTradeSettingsScreen());
+                client.setScreen(new ModSettingsScreen());
             }
             Keybinds.wasOpenMenuKeyPressed = openMenuKeyNow;
 
