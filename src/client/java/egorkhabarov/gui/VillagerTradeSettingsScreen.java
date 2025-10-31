@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class VillagerTradeSettingsScreen extends Screen {
+public class VillagerTradeSettingsScreen extends TabScreen {
     private static final Identifier OUT_OF_STOCK_TEXTURE = Identifier.ofVanilla("container/villager/out_of_stock");
     private static final Identifier SCROLLER_TEXTURE = Identifier.ofVanilla("container/villager/scroller");
     private static final Identifier SCROLLER_DISABLED_TEXTURE = Identifier.ofVanilla("container/villager/scroller_disabled");
@@ -34,29 +34,24 @@ public class VillagerTradeSettingsScreen extends Screen {
     private final WidgetButtonPage[] offers = new WidgetButtonPage[7];
     int indexStartOffset;
     private boolean scrolling;
-    private static final int WIDTH = 276;
-    private static final int HEIGHT = 166;
-    private final Screen parent;
     private final List<TradeRule> trades;
     private final List<Slot> slots = new ArrayList<>();
 
     public VillagerTradeSettingsScreen(Screen parent) {
-        super(Text.translatable("avt_menu.trades"));
-        this.parent = parent;
+        super(Text.translatable("avt_menu.trades"), parent);
         this.trades = AutoVillagerTraderModClient.CONFIG.trades;
     }
 
     public VillagerTradeSettingsScreen() {
-        super(Text.translatable("avt_menu.trades"));
-        this.parent = null;
+        super(Text.translatable("avt_menu.trades"), null);
         this.trades = AutoVillagerTraderModClient.CONFIG.trades;
     }
 
     @Override
     protected void init() {
         super.init();
-        int i = (this.width - WIDTH) / 2;
-        int j = (this.height - HEIGHT) / 2;
+        int i = (this.width - this.WIDTH) / 2;
+        int j = (this.height - this.HEIGHT) / 2;
         int k = j + 16 + 2;
 
         for(int l = 0; l < 7; ++l) {
@@ -124,9 +119,9 @@ public class VillagerTradeSettingsScreen extends Screen {
     }
 
     protected void drawForeground(DrawContext context, int mouseX, int mouseY) {
-        int i = (this.width - WIDTH) / 2;
-        int j = (this.height - HEIGHT) / 2;
-        context.drawText(this.textRenderer, this.title, i+49 + WIDTH / 2 - this.textRenderer.getWidth(this.title) / 2, j+6, -12566464, false);
+        int i = (this.width - this.WIDTH) / 2;
+        int j = (this.height - this.HEIGHT) / 2;
+        context.drawText(this.textRenderer, this.title, i+49 + this.WIDTH / 2 - this.textRenderer.getWidth(this.title) / 2, j+6, -12566464, false);
 
         TradeRule tradeRule = this.trades.get(this.selectedIndex);
         context.drawText(this.textRenderer, Text.of(tradeRule.getRuleId()), i+107, j+HEIGHT-94, -12566464, false);
@@ -135,9 +130,9 @@ public class VillagerTradeSettingsScreen extends Screen {
     }
 
     protected void drawBackground(DrawContext context, float deltaTicks, int mouseX, int mouseY) {
-        int i = (this.width - WIDTH) / 2;
-        int j = (this.height - HEIGHT) / 2;
-        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0.0F, 0.0F, WIDTH, HEIGHT, 512, 256);
+        int i = (this.width - this.WIDTH) / 2;
+        int j = (this.height - this.HEIGHT) / 2;
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TEXTURE, i, j, 0.0F, 0.0F, this.WIDTH, this.HEIGHT, 512, 256);
         if (!this.trades.isEmpty()) {
             int k = this.selectedIndex;
             if (k < 0 || k >= this.trades.size()) {
@@ -173,8 +168,8 @@ public class VillagerTradeSettingsScreen extends Screen {
         super.render(context, mouseX, mouseY, deltaTicks);
 
         if (!this.trades.isEmpty()) {
-            int i = (this.width - WIDTH) / 2;
-            int j = (this.height - HEIGHT) / 2;
+            int i = (this.width - this.WIDTH) / 2;
+            int j = (this.height - this.HEIGHT) / 2;
             int k = j + 16 + 1;
             int l = i + 5 + 5;
             this.renderScrollbar(context, i, j, this.trades);
@@ -268,7 +263,6 @@ public class VillagerTradeSettingsScreen extends Screen {
                 int j = i - 7;
                 this.indexStartOffset = MathHelper.clamp((int)((double)this.indexStartOffset - verticalAmount), 0, j);
             }
-
             return true;
         }
     }
@@ -276,7 +270,7 @@ public class VillagerTradeSettingsScreen extends Screen {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         int i = this.trades.size();
         if (this.scrolling) {
-            int j = this.height + 18;  // TODO y?
+            int j = this.height + 18;
             int k = j + 139;
             int l = i - 7;
             float f = ((float)mouseY - (float)j - 13.5F) / ((float)(k - j) - 27.0F);
@@ -290,20 +284,12 @@ public class VillagerTradeSettingsScreen extends Screen {
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         this.scrolling = false;
-        int i = (this.width - WIDTH) / 2;
-        int j = (this.height - HEIGHT) / 2;
+        int i = (this.width - this.WIDTH) / 2;
+        int j = (this.height - this.HEIGHT) / 2;
         if (this.canScroll(this.trades.size()) && mouseX > (double)(i + 94) && mouseX < (double)(i + 94 + 6) && mouseY > (double)(j + 18) && mouseY <= (double)(j + 18 + 139 + 1)) {
             this.scrolling = true;
         }
-
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
-    public void close() {
-        if (this.client != null) {
-            this.client.setScreen(this.parent);
-        }
     }
 
     @Environment(EnvType.CLIENT)
