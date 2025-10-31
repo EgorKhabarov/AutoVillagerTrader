@@ -31,7 +31,7 @@ public class StepSlider extends SliderWidget {
     protected void updateMessage() {
         this.valueReal = getRealValue();
         if (this.suffix.equals("s")) {
-            this.setMessage(this.name.copy().append(": ").append(String.valueOf((int) this.valueReal)).append(this.suffix));
+            this.setMessage(this.name.copy().append(": ").append(String.valueOf(this.valueReal/1000)).append(this.suffix));
         } else {
             this.setMessage(this.name.copy().append(": ").append(String.valueOf(this.valueReal)).append(this.suffix));
         }
