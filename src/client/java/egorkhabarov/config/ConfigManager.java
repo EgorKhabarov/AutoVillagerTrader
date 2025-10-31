@@ -68,9 +68,9 @@ public class ConfigManager {
 {
     "enabled": false,
     "auto_finder_enabled": false,
-    "scan_interval_ms": 900,
+    "scan_interval_ms": 1000,
     "scan_radius": 0.5,
-    "villager_cache_ttl": 5000,
+    "villager_cache_ttl": 10000,
     "need_see": true,
     "professions": ["minecraft:farmer"],
     "trades": [
