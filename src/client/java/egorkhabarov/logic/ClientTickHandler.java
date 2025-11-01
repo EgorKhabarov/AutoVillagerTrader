@@ -8,6 +8,10 @@ import net.minecraft.client.MinecraftClient;
 
 public class ClientTickHandler {
     private static long lastScanTime = 0;
+    private static long lastInventoryCheckTime = 0;
+
+    private static boolean inventoryCheckLastResult = true;
+    private static final long INVENTORY_CHECK_INTERVAL_MS  = 3000;
 
     public static void register() {
         ClientTickEvents.END_CLIENT_TICK.register((MinecraftClient client) -> {
@@ -25,6 +29,15 @@ public class ClientTickHandler {
 
             long now = System.currentTimeMillis();
             long interval = config.scan_interval_ms;
+
+            if (now - lastInventoryCheckTime >= Math.max(interval, INVENTORY_CHECK_INTERVAL_MS)) {
+                lastInventoryCheckTime = now;
+                inventoryCheckLastResult = InventoryChecker.canTrade();
+            }
+
+            if (!inventoryCheckLastResult) {
+                return;
+            }
 
             if (now - lastScanTime >= interval) {
                 lastScanTime = now;

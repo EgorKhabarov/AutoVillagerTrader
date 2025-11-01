@@ -10,6 +10,8 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.packet.c2s.play.*;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.screen.sync.ItemStackHash;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.village.TradeOfferList;
 
@@ -46,6 +48,12 @@ public class VillagerTradeExecutor {
                 }
             }
         }
+        player.sendMessage(
+            Text.translatable("message.autotrader.items_for_trade")
+                .append(InventoryChecker.getCount().toString())
+                .formatted(Formatting.GREEN),
+            true
+        );
     }
 
     public static void executeTrade(int syncId, int tradeIndex) {
