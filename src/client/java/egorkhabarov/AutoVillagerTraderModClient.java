@@ -14,11 +14,11 @@ public class AutoVillagerTraderModClient implements ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static ConfigData CONFIG;
 
-	@Override
-	public void onInitializeClient() {
-		AutoVillagerTraderModClient.CONFIG = ConfigManager.getConfig();
+    @Override
+    public void onInitializeClient() {
+        AutoVillagerTraderModClient.CONFIG = ConfigManager.getConfig();
         AutoVillagerTraderCommand.register();
         ClientTickHandler.register();
         Keybinds.register();
-	}
+    }
 }

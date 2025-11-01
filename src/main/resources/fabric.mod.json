@@ -1,39 +1,39 @@
 {
-	"schemaVersion": 1,
-	"id": "auto_villager_trader",
-	"version": "${version}",
-	"name": "Auto Villager Trader",
-	"description": "Automatically trade with villagers!",
-	"authors": [
+    "schemaVersion": 1,
+    "id": "auto_villager_trader",
+    "version": "${version}",
+    "name": "Auto Villager Trader",
+    "description": "Automatically trade with villagers!",
+    "authors": [
         "EgorKhabarov"
-	],
-	"contact": {
+    ],
+    "contact": {
         "homepage": "https://github.com/EgorKhabarov/AutoVillagerTrader",
         "issues": "https://github.com/EgorKhabarov/AutoVillagerTrader/issues",
         "sources": "https://github.com/EgorKhabarov/AutoVillagerTrader"
-	},
-	"license": "GPL-3.0",
-	"icon": "assets/auto_villager_trader/icon.png",
-	"environment": "client",
-	"entrypoints": {
-		"client": ["egorkhabarov.AutoVillagerTraderModClient"],
+    },
+    "license": "GPL-3.0",
+    "icon": "assets/auto_villager_trader/icon.png",
+    "environment": "client",
+    "entrypoints": {
+        "client": ["egorkhabarov.AutoVillagerTraderModClient"],
         "modmenu": ["egorkhabarov.config.ModMenuIntegration"]
-	},
-	"mixins": [
-		{
-			"config": "auto_villager_trader.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.16.14",
-		"minecraft": "~1.21.8",
-		"java": ">=21",
-		"fabric-api": "*"
-	},
-	"suggests": {
+    },
+    "mixins": [
+        {
+            "config": "auto_villager_trader.client.mixins.json",
+            "environment": "client"
+        }
+    ],
+    "depends": {
+        "fabricloader": ">=0.16.14",
+        "minecraft": "~1.21.8",
+        "java": ">=21",
+        "fabric-api": "*"
+    },
+    "suggests": {
         "modmenu": "*"
-	},
+    },
     "custom": {
         "modmenu": {
             "links": {
