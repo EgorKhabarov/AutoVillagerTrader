@@ -51,7 +51,7 @@ public class ModSettingsScreen extends TabScreen {
                         this.textRenderer
                     )
                     .pos(i + 10, j + 10 + 20 + 25)
-                    .checked(config.enabled)
+                    .checked(config.auto_finder_enabled)
                     .maxWidth(75)
                     .callback((CheckboxWidget c, boolean checked) -> {
                         config.auto_finder_enabled = checked;
@@ -65,7 +65,7 @@ public class ModSettingsScreen extends TabScreen {
                         this.textRenderer
                     )
                     .pos(i + 10, j + 10 + 20 + 50)
-                    .checked(config.enabled)
+                    .checked(config.need_see)
                     .maxWidth(75)
                     .callback((CheckboxWidget c, boolean checked) -> {
                         config.need_see = checked;
@@ -75,10 +75,7 @@ public class ModSettingsScreen extends TabScreen {
             );
         }
 
-        // scan_interval_ms
         this.addDrawableChild(new StepSlider(
-            // this.width / 2 - 100,
-            // this.height / 2 + 20,
             i + 116,
             j + 10 + 20,
             150, 18,
@@ -92,7 +89,6 @@ public class ModSettingsScreen extends TabScreen {
             }
         ));
 
-        // scan_radius
         this.addDrawableChild(new StepSlider(
             i + 116,
             j + 10 + 20 + 25,
@@ -107,7 +103,6 @@ public class ModSettingsScreen extends TabScreen {
             }
         ));
 
-        // villager_cache_ttl
         this.addDrawableChild(new StepSlider(
             i + 116,
             j + 10 + 20 + 50,
