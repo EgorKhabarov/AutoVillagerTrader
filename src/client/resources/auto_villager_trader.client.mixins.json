@@ -3,9 +3,10 @@
     "package": "egorkhabarov.mixin",
     "compatibilityLevel": "JAVA_21",
     "client": [
-        "ClientPlayNetworkHandlerMixin"
+        "ClientPlayNetworkHandlerMixin",
+        "HandledScreensMixin"
     ],
     "injectors": {
         "defaultRequire": 1
-	}
+    }
 }
