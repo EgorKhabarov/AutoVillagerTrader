@@ -12,6 +12,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import egorkhabarov.AutoVillagerTraderModClient;
@@ -66,7 +67,7 @@ public class VillagerTradeSettingsScreen extends TabScreen {
             .dimensions(i + 193, j + 89, 70+5, 20)
             .build());
 
-        this.addDrawableChild(ButtonWidget.builder(Text.translatable("avt_menu.button.remove"), b -> onDelete())
+        this.addDrawableChild(ButtonWidget.builder(Text.translatable("avt_menu.button.remove").formatted(Formatting.RED), b -> onDelete())
             .dimensions(i + 113-5, j + 119, 70+5, 20)
             .build());
 
