@@ -48,4 +48,9 @@ public class TabScreen extends AbstractTabScreen {
             tab.setSelected(tab.getTarget().getClass() == this.getClass());
         }
     }
+
+    @Override
+    public boolean shouldPause() {
+        return false;
+    }
 }
