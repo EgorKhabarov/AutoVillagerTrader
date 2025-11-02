@@ -26,5 +26,8 @@
     "avt_menu.button.scan_interval_ms": "Scan Interval",
     "avt_menu.button.scan_radius": "Scan Radius",
     "avt_menu.button.villager_cache_ttl": "Villager Cache TTL",
-    "avt_menu.button.need_see": "Need See"
+    "avt_menu.button.need_see": "Need See",
+    "message.autotrader.items_for_trade": "Items for trade: ",
+    "avt_menu.toast.auto_finder": "Automatic search for a villager and interaction with him",
+    "avt_menu.toast.need_see": "Do you need to see a villager for the mod to automatically trade with them?"
 }

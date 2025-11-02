@@ -15,5 +15,8 @@
     "avt_menu.button.scan_interval_ms": "Интервал поиска",
     "avt_menu.button.scan_radius": "Радиус поиска",
     "avt_menu.button.villager_cache_ttl": "Villager Cache TTL",
-    "avt_menu.button.need_see": "Нужно видеть жителя"
+    "avt_menu.button.need_see": "Нужно видеть жителя",
+    "message.autotrader.items_for_trade": "Предметов для торговли: ",
+    "avt_menu.toast.auto_finder": "Автоматический поиск жителя и взаимодействие с ним",
+    "avt_menu.toast.need_see": "Нужно ли вам видеть жителя, чтобы мод автоматически торговал с ним?"
 }

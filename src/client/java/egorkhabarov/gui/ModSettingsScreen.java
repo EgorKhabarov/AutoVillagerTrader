@@ -7,6 +7,7 @@ import egorkhabarov.gui.slider.StepSlider;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -57,6 +58,7 @@ public class ModSettingsScreen extends TabScreen {
                         config.auto_finder_enabled = checked;
                         ConfigManager.saveConfig();
                     })
+                    .tooltip(Tooltip.of(Text.translatable("avt_menu.toast.auto_finder")))
                     .build()
             );
             this.addDrawableChild(
@@ -71,6 +73,7 @@ public class ModSettingsScreen extends TabScreen {
                         config.need_see = checked;
                         ConfigManager.saveConfig();
                     })
+                    .tooltip(Tooltip.of(Text.translatable("avt_menu.toast.need_see")))
                     .build()
             );
         }
