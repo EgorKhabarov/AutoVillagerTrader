@@ -4,6 +4,7 @@ import egorkhabarov.AutoVillagerTraderModClient;
 import egorkhabarov.logic.VillagerTradeExecutor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.network.packet.s2c.play.SetTradeOffersS2CPacket;
 import net.minecraft.village.TradeOfferList;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,13 +20,15 @@ public class ClientPlayNetworkHandlerMixin {
         if (!AutoVillagerTraderModClient.CONFIG.enabled) {
             return;
         }
-        if (client.player == null) {
+        if (client.player == null || client.getNetworkHandler() == null) {
             return;
         }
         TradeOfferList offers = packet.getOffers();
         System.out.println("    onSetTradeOffers ++");
         VillagerTradeExecutor.finishAutoTrade(offers);
         System.out.println("client.player.closeHandledScreen();");
-        client.player.closeHandledScreen();
+        // client.player.closeHandledScreen();
+        client.player.networkHandler.sendPacket(new CloseHandledScreenC2SPacket(client.player.currentScreenHandler.syncId));
+        client.player.currentScreenHandler = client.player.playerScreenHandler;
     }
 }
