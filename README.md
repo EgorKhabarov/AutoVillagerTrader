@@ -9,13 +9,7 @@ and customize keybinds to start or stop the trading process.
 When activated, the mod automatically finds nearby villagers
 and performs all available trades defined in your config - no more endless clicking!
 
-### Images
-
-![images/settings_screen.png](images/settings_screen.png)
-![images/trades_screen.png](images/trades_screen.png)
-![images/trades_select_screen.png](images/trades_select_screen.png)
-![images/trades_toggle_screen.png](images/trades_toggle_screen.png)
-![images/professions_screen.png](images/professions_screen.png)
+![images/settings_screen.gif](images/settings_screen.gif)
 
 ### Disclaimer
 
