@@ -11,7 +11,7 @@ public class ClientTickHandler {
     private static long lastInventoryCheckTime = 0;
 
     private static boolean inventoryCheckLastResult = true;
-    private static final long INVENTORY_CHECK_INTERVAL_MS  = 3000;
+    private static final long INVENTORY_CHECK_INTERVAL_MS = 3000;
 
     public static void register() {
         ClientTickEvents.END_CLIENT_TICK.register((MinecraftClient client) -> {
