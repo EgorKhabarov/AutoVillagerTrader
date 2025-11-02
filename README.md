@@ -2,6 +2,21 @@
 
 [![build](https://github.com/EgorKhabarov/AutoVillagerTrader/actions/workflows/build.yml/badge.svg)](https://github.com/EgorKhabarov/AutoVillagerTrader/actions/workflows/build.yml)
 
+A client-side Fabric mod that allows fast and automatic trading with villagers based on configurable trades
+
+You can easily set up your preferred trades in a simple, vanilla-like configuration screen
+and customize keybinds to start or stop the trading process.
+When activated, the mod automatically finds nearby villagers
+and performs all available trades defined in your config - no more endless clicking!
+
+### Images
+
+![images/settings_screen.png](images/settings_screen.png)
+![images/trades_screen.png](images/trades_screen.png)
+![images/trades_select_screen.png](images/trades_select_screen.png)
+![images/trades_toggle_screen.png](images/trades_toggle_screen.png)
+![images/professions_screen.png](images/professions_screen.png)
+
 ### Disclaimer
 
 This mod is intended for personal use only.
