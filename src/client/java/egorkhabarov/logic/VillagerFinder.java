@@ -10,6 +10,7 @@ import egorkhabarov.config.ConfigData;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.util.Hand;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class VillagerFinder {
@@ -32,13 +33,14 @@ public class VillagerFinder {
         List<VillagerEntity> villagers = client.world.getEntitiesByClass(
             VillagerEntity.class,
             player.getBoundingBox().expand(config.scan_radius),
-            v -> {
+            (VillagerEntity v) -> {
                 if (config.need_see && !player.canSee(v)) {
                     return false;
                 }
                 return config.professions.contains(v.getVillagerData().profession().getIdAsString());
             }
         );
+        villagers.sort(Comparator.comparingDouble(player::distanceTo));
 
         for (VillagerEntity villager : villagers) {
             if (VillagerCache.get(villager) != null) {
